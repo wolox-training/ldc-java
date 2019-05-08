@@ -90,6 +90,7 @@ public class User {
      * BookAlreadyOwnedException is thrown.
      *
      * @param {@link Book}
+     * @throws {@link BookAlreadyOwnedException}
      */
     public void addBook(Book book) {
         if (!books.contains(book)) {
