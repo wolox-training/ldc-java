@@ -1,5 +1,6 @@
 package wolox.training.model;
 
+import com.google.common.base.Preconditions;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,7 +54,8 @@ public class Book {
     }
 
     public void setId(long id) {
-        this.id = id;
+        this.id = Preconditions.checkNotNull(id,
+            "Illegal Argument, id cannot be NULL.");
     }
 
     public String getGenre() {
@@ -69,7 +71,8 @@ public class Book {
     }
 
     public void setAuthor(String author) {
-        this.author = author;
+        this.author = Preconditions.checkNotNull(author,
+            "Illegal Argument, author cannot be NULL.");
     }
 
     public String getImage() {
@@ -77,7 +80,8 @@ public class Book {
     }
 
     public void setImage(String image) {
-        this.image = image;
+        this.image = Preconditions.checkNotNull(image,
+            "Illegal Argument, image cannot be NULL.");
     }
 
     public String getTitle() {
@@ -85,7 +89,8 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = Preconditions.checkNotNull(title,
+            "Illegal Argument, title cannot be NULL.");
     }
 
     public String getSubtitle() {
@@ -93,7 +98,8 @@ public class Book {
     }
 
     public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+        this.subtitle = Preconditions.checkNotNull(subtitle,
+            "Illegal Argument, subtitle cannot be NULL.");
     }
 
     public String getPublisher() {
@@ -101,7 +107,8 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
-        this.publisher = publisher;
+        this.publisher = Preconditions.checkNotNull(publisher,
+            "Illegal Argument, publisher cannot be NULL.");
     }
 
     public String getYear() {
@@ -109,7 +116,8 @@ public class Book {
     }
 
     public void setYear(String year) {
-        this.year = year;
+        this.year = Preconditions.checkNotNull(year,
+            "Illegal Argument, year cannot be NULL.");
     }
 
     public Integer getPages() {
@@ -117,6 +125,8 @@ public class Book {
     }
 
     public void setPages(Integer pages) {
+        Preconditions.checkArgument(pages != null && pages > 0,
+            "Illegal Argument, pages has to be greater than 0.");
         this.pages = pages;
     }
 
@@ -125,6 +135,7 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
-        this.isbn = isbn;
+        this.isbn = Preconditions.checkNotNull(isbn,
+            "Illegal Argument, isbn cannot be NULL.");
     }
 }
