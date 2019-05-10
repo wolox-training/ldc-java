@@ -5,6 +5,6 @@ import wolox.training.model.Book;
 
 public interface BookRepository extends CrudRepository<Book, Long> {
 
-    Book findByAuthorIgnoreCase(String author);
+    Optional<Book> findByAuthorIgnoreCase(String author);
 
 }
