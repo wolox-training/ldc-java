@@ -60,8 +60,9 @@ public class User {
     }
 
     public void setUsername(String username) {
-        this.username = Preconditions.checkNotNull(username,
-            "Illegal Argument, username cannot be NULL.");
+        Preconditions.checkArgument(username != null && !username.isEmpty(),
+            "Illegal Argument, username cannot be empty.");
+        this.username = username;
     }
 
     public String getName() {
@@ -69,8 +70,9 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name,
-            "Illegal Argument, name cannot be NULL.");
+        Preconditions.checkArgument(name != null && !name.isEmpty(),
+            "Illegal Argument, name cannot be empty.");
+        this.name = name;
     }
 
     public LocalDate getBirthdate() {
