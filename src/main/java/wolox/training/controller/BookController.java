@@ -54,4 +54,10 @@ public class BookController {
                 "Book with id " + id + " not found"));
         return bookRepository.save(book);
     }
+
+    @GetMapping("/{isbn}")
+    public Book findByIsbn(@PathVariable String isbn) {
+        // TODO: Lógica de buscar primero en nuestra db y, en caso de no encontrarlo, en la API externa
+        return null;
+    }
 }
