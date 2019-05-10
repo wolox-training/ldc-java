@@ -1,10 +1,10 @@
 package wolox.training.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -15,28 +15,28 @@ public class Book {
 
     private String genre;
 
-    @Column(nullable = false)
+    @NotNull
     private String author;
 
-    @Column(nullable = false)
+    @NotNull
     private String image;
 
-    @Column(nullable = false)
+    @NotNull
     private String title;
 
-    @Column(nullable = false)
+    @NotNull
     private String subtitle;
 
-    @Column(nullable = false)
+    @NotNull
     private String publisher;
 
-    @Column(nullable = false)
+    @NotNull
     private String year;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer pages;
 
-    @Column(nullable = false)
+    @NotNull
     private String isbn;
 
     public Book() {
@@ -45,10 +45,6 @@ public class Book {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getGenre() {
