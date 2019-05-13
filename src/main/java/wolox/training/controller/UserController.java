@@ -16,6 +16,7 @@ import wolox.training.exceptions.UserIdMismatchException;
 import wolox.training.model.Book;
 import wolox.training.model.User;
 import wolox.training.repositories.UserRepository;
+import wolox.training.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/{id}")
     public User findOne(@PathVariable Long id) {
@@ -34,7 +38,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody User user) {
-        return userRepository.save(user);
+        return userService.createUser(user);
     }
 
     @PostMapping("/{userId}/books")

@@ -29,6 +29,9 @@ public class User {
     private String username;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -62,6 +65,14 @@ public class User {
     public void setUsername(String username) {
         this.username = Preconditions.checkNotNull(username,
             "Illegal Argument, username cannot be NULL.");
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {
@@ -107,7 +118,7 @@ public class User {
     }
 
     /**
-     * Remove a book from the books of the user. If the book doesn't exist, nothing happend
+     * Remove a book from the books of the user. If the book doesn't exist, nothing happends
      *
      * @param {@link Book}
      */
