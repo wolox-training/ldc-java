@@ -71,11 +71,9 @@ public class BookController {
                 return (ResponseEntity.status(HttpStatus.OK).body(optionalBook.get()));
             } else {
                 return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(bookRepository.findByIsbn(isbn).
-                        orElseGet(() ->
-                            bookService.findByIsbn(isbn).orElseThrow(
-                                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                    "Book with ISBN " + isbn + " not found"))));
+                    .body(bookService.findByIsbn(isbn).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Book with ISBN " + isbn + " not found")));
             }
         } catch (RequiredFieldNotExists ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
