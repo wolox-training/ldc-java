@@ -1,7 +1,9 @@
 package wolox.training.controller;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,14 +64,19 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public Book search(@RequestParam("isbn") String isbn) {
+    public ResponseEntity<Book> search(@RequestParam("isbn") String isbn) {
         try {
-            return bookRepository.findByIsbn(isbn).
-                orElseGet(() ->
-                    bookService.findByIsbn(isbn).orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Book with ISBN " + isbn + " not found"))
-                );
+            Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);
+            if (optionalBook.isPresent()) {
+                return (ResponseEntity.status(HttpStatus.OK).body(optionalBook.get()));
+            } else {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(bookRepository.findByIsbn(isbn).
+                        orElseGet(() ->
+                            bookService.findByIsbn(isbn).orElseThrow(
+                                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                    "Book with ISBN " + isbn + " not found"))));
+            }
         } catch (RequiredFieldNotExists ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                 ex.getMessage());
