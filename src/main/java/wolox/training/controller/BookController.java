@@ -9,12 +9,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import wolox.training.exceptions.BookIdMismatchException;
+import wolox.training.exceptions.RequiredFieldNotExists;
 import wolox.training.model.Book;
 import wolox.training.repositories.BookRepository;
+import wolox.training.service.OpenLibraryService;
 
 @RestController
 @RequestMapping("/api/books")
@@ -22,6 +25,9 @@ public class BookController {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private OpenLibraryService openLibraryService;
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
@@ -55,9 +61,19 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/{isbn}")
-    public Book findByIsbn(@PathVariable String isbn) {
-        // TODO: Lógica de buscar primero en nuestra db y, en caso de no encontrarlo, en la API externa
-        return null;
+    @GetMapping("/search")
+    public Book search(@RequestParam("isbn") String isbn) {
+        try {
+            return bookRepository.findByIsbn(isbn).
+                orElse(
+                    openLibraryService.bookInfo(isbn).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Book with ISBN " + isbn + " not found"))
+                );
+        } catch (RequiredFieldNotExists ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage());
+        }
     }
+
 }
