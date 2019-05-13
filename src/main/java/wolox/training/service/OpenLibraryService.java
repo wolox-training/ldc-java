@@ -20,7 +20,7 @@ public class OpenLibraryService {
      * @param optionalBookDTO is the BookDTO built from the JSON response (If exists)
      * @return Optional<Book> with the book if the book exists, or Optional.empty otherwise
      */
-    private Optional<Book> convertBookDTOtoBook(Optional<BookDTO> optionalBookDTO) {
+    private Optional<Book> convertBookDTOToBook(Optional<BookDTO> optionalBookDTO) {
         try {
             Book book = new Book();
             BookDTO bookDTO = optionalBookDTO.orElseThrow(BookNotFoundException::new);
@@ -42,7 +42,7 @@ public class OpenLibraryService {
         ResponseEntity<String> response = restTemplate
             .getForEntity(API_URL + isbn + FORMAT_PARAMETER, String.class);
         Optional<BookDTO> optionalBookDTO = BookDTO.buildBookDTO(response.getBody());
-        return (this.convertBookDTOtoBook(optionalBookDTO));
+        return (this.convertBookDTOToBook(optionalBookDTO));
     }
 
 }
