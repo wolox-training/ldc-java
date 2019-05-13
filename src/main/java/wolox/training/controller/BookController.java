@@ -17,7 +17,7 @@ import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.RequiredFieldNotExists;
 import wolox.training.model.Book;
 import wolox.training.repositories.BookRepository;
-import wolox.training.service.OpenLibraryService;
+import wolox.training.service.BookService;
 
 @RestController
 @RequestMapping("/api/books")
@@ -27,7 +27,7 @@ public class BookController {
     private BookRepository bookRepository;
 
     @Autowired
-    private OpenLibraryService openLibraryService;
+    private BookService bookService;
 
     @GetMapping("/{id}")
     public Book findOne(@PathVariable Long id) {
@@ -65,8 +65,8 @@ public class BookController {
     public Book search(@RequestParam("isbn") String isbn) {
         try {
             return bookRepository.findByIsbn(isbn).
-                orElse(
-                    openLibraryService.bookInfo(isbn).orElseThrow(
+                orElseGet(() ->
+                    bookService.findByIsbn(isbn).orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Book with ISBN " + isbn + " not found"))
                 );

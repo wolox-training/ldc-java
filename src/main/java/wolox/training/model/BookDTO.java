@@ -13,6 +13,8 @@ public class BookDTO {
 
     private final static String TITLE_FIELD = "title";
     private final static String SUBTITLE_FIELD = "subtitle";
+    private final static String COVER_FIELD = "cover";
+    private final static String COVER_SIZE_FIELD = "small";
     private final static String PUBLISHER_FIELD = "publishers";
     private final static String NAME_FIELD = "name";
     private final static String PUBLISH_DATE_FIELD = "publish_date";
@@ -21,6 +23,7 @@ public class BookDTO {
     private String isbn;
     private String title;
     private String subtitle;
+    private String image;
     private String publisher;
     private String publishDate;
     private Integer pages;
@@ -45,13 +48,14 @@ public class BookDTO {
             String isbnValue = actualObj.fieldNames().next().replaceAll("ISBN:", "");
             JsonNode titleNode = actualObj.findPath(TITLE_FIELD);
             JsonNode subtitleNode = actualObj.findPath(SUBTITLE_FIELD);
+            JsonNode imageField = actualObj.findPath(COVER_FIELD);
             JsonNode publishDateNode = actualObj.findPath(PUBLISH_DATE_FIELD);
             JsonNode pagesNode = actualObj.findPath(PAGES_FIELD);
             JsonNode publishersNode = actualObj.findPath(PUBLISHER_FIELD);
             JsonNode authorsNode = actualObj.findPath(AUTHORS_FIELD);
             if (titleNode.isMissingNode() || subtitleNode.isMissingNode() || publishDateNode
                 .isMissingNode() || pagesNode.isMissingNode() || publishersNode.isMissingNode()
-                || authorsNode.isMissingNode()) {
+                || authorsNode.isMissingNode() || imageField.isMissingNode()) {
                 throw new RequiredFieldNotExists(
                     "Some of the required fields of the book are not complete");
             } else {
@@ -61,6 +65,7 @@ public class BookDTO {
                 bookDTO.setSubtitle(subtitleNode.textValue());
                 bookDTO.setPublishDate(publishDateNode.textValue());
                 bookDTO.setPages(pagesNode.asInt());
+                bookDTO.setImage(imageField.findPath(COVER_SIZE_FIELD).textValue());
                 bookDTO.setPublisher(publishersNode.findPath(NAME_FIELD).textValue());
                 bookDTO.setAuthors(authorsNode.findPath(NAME_FIELD).textValue());
                 return Optional.of(bookDTO);
@@ -92,6 +97,14 @@ public class BookDTO {
 
     public void setSubtitle(String subtitle) {
         this.subtitle = subtitle;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getPublisher() {
