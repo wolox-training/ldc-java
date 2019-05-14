@@ -44,6 +44,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         http
             .httpBasic()
             .and()
+            .csrf().disable()
             .exceptionHandling()
             .and()
             .authorizeRequests()
