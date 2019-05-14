@@ -63,7 +63,7 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search-by-isbn")
     public ResponseEntity<Book> search(@RequestParam("isbn") String isbn) {
         try {
             Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);
@@ -80,5 +80,16 @@ public class BookController {
                 ex.getMessage());
         }
     }
+
+    @GetMapping("/search")
+    public Book findByPublisherGenreAndYear(@RequestParam("publisher") String publisher,
+        @RequestParam("genre") String genre, @RequestParam("year") String year) {
+        return bookRepository
+            .findAllByPublisherAndGenreAndYear(publisher, genre, year)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Not found")
+            );
+    }
+
 
 }
