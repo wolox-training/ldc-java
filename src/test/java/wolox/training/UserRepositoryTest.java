@@ -60,7 +60,7 @@ public class UserRepositoryTest {
     @Test
     public void whenCreateUser_thenUserIsPersisted() {
         User persistedUser = userRepository.findFirstByUsername("carlitosbala").orElse(null);
-        assertThat(persistedUser.getUsername().equals(oneTestUser.getUsername()));
+        assertThat(persistedUser.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(persistedUser.getName().equals(oneTestUser.getName()));
         assertThat(persistedUser.getBirthdate().equals(oneTestUser.getBirthdate()));
         assertThat(persistedUser.getBooks().equals(oneTestUser.getBooks()));
@@ -93,8 +93,8 @@ public class UserRepositoryTest {
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "Rovi").get();
         User user = users.get(0);
-        assertThat(user.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(user.getName().equals(oneTestUser.getName()));
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
 }

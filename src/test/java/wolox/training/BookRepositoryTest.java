@@ -117,7 +117,7 @@ public class BookRepositoryTest {
             .findAllByPublisherAndGenreAndYear(oneTestBook.getPublisher(), oneTestBook.getGenre(),
                 oneTestBook.getYear()).get();
         Book book = books.get(0);
-        assertThat(book.getIsbn().equals(oneTestBook.getIsbn()));
+        assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
 }
