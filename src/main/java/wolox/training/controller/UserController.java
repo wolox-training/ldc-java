@@ -89,11 +89,11 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public User findByBirthdateAndName(@RequestParam("since") String since,
+    public User findByBirthdateAndName(@RequestParam("from") String from,
         @RequestParam("to") String to, @RequestParam("name") String name) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         return userRepository
-            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate.parse(since, formatter),
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate.parse(from, formatter),
                 LocalDate.parse(to, formatter), name).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Not found"));
