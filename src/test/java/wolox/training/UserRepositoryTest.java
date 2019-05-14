@@ -93,8 +93,8 @@ public class UserRepositoryTest {
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "Rovi").get();
         User user = users.get(0);
-        assertThat(user.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(user.getName().equals(oneTestUser.getName()));
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
     @Test
@@ -105,8 +105,8 @@ public class UserRepositoryTest {
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, null).get();
         User user = users.get(0);
-        assertThat(user.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(user.getName().equals(oneTestUser.getName()));
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
     @Test
@@ -115,8 +115,8 @@ public class UserRepositoryTest {
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
                 null, null, "Rovi").get();
         User user = users.get(0);
-        assertThat(user.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(user.getName().equals(oneTestUser.getName()));
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
     @Test
@@ -127,8 +127,8 @@ public class UserRepositoryTest {
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
                 from, null, null).get();
         User user = users.get(0);
-        assertThat(user.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(user.getName().equals(oneTestUser.getName()));
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
     @Test
@@ -139,8 +139,8 @@ public class UserRepositoryTest {
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
                 null, to, null).get();
         User user = users.get(0);
-        assertThat(user.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(user.getName().equals(oneTestUser.getName()));
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
 }
