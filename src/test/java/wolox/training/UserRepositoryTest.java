@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,8 +90,9 @@ public class UserRepositoryTest {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         LocalDate to = LocalDate.parse("2010-12-31", formatter);
-        User user = userRepository
+        List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "Rovi").get();
+        User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername()));
         assertThat(user.getName().equals(oneTestUser.getName()));
     }

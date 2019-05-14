@@ -2,6 +2,7 @@ package wolox.training;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,9 +113,10 @@ public class BookRepositoryTest {
 
     @Test
     public void whenFindByPublisherGenreAndYear_thenBookIsReturned() {
-        Book book = bookRepository
+        List<Book> books = bookRepository
             .findAllByPublisherAndGenreAndYear(oneTestBook.getPublisher(), oneTestBook.getGenre(),
                 oneTestBook.getYear()).get();
+        Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn()));
     }
 
