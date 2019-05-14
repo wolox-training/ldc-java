@@ -1,5 +1,6 @@
 package wolox.training.controller;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,7 +83,7 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public Book findByPublisherGenreAndYear(@RequestParam("publisher") String publisher,
+    public List<Book> findByPublisherGenreAndYear(@RequestParam("publisher") String publisher,
         @RequestParam("genre") String genre, @RequestParam("year") String year) {
         return bookRepository
             .findAllByPublisherAndGenreAndYear(publisher, genre, year)

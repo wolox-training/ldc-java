@@ -3,6 +3,7 @@ package wolox.training.controller;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -89,7 +90,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public User findByBirthdateAndName(@RequestParam("from") String from,
+    public List<User> findByBirthdateAndName(@RequestParam("from") String from,
         @RequestParam("to") String to, @RequestParam("name") String name) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         return userRepository
