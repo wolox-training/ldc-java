@@ -57,10 +57,10 @@ public class UserRepositoryTest {
     @Test
     public void whenCreateUser_thenUserIsPersisted() {
         User persistedUser = userRepository.findFirstByUsername("carlitosbala").orElse(null);
-        assertThat(persistedUser.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(persistedUser.getName().equals(oneTestUser.getName()));
-        assertThat(persistedUser.getBirthdate().equals(oneTestUser.getBirthdate()));
-        assertThat(persistedUser.getBooks().equals(oneTestUser.getBooks()));
+        assertThat(persistedUser.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(persistedUser.getName().equals(oneTestUser.getName())).isTrue();
+        assertThat(persistedUser.getBirthdate().equals(oneTestUser.getBirthdate())).isTrue();
+        assertThat(persistedUser.getBooks().size() == oneTestUser.getBooks().size()).isTrue();
     }
 
     @Test(expected = NullPointerException.class)
