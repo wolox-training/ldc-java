@@ -74,7 +74,7 @@ public class User {
     }
 
     public List<Book> getBooks() {
-        return (List<Book>) Collections.unmodifiableCollection(books);
+        return (List<Book>) Collections.unmodifiableList(books);
     }
 
     public void setBooks(List<Book> books) {
