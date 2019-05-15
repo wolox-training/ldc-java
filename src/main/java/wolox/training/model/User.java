@@ -1,5 +1,6 @@
 package wolox.training.model;
 
+import com.google.common.base.Preconditions;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +49,8 @@ public class User {
     }
 
     public void setUsername(String username) {
+        Preconditions.checkArgument(username != null && !username.isEmpty(),
+            "Illegal Argument, username cannot be empty.");
         this.username = username;
     }
 
@@ -56,6 +59,8 @@ public class User {
     }
 
     public void setName(String name) {
+        Preconditions.checkArgument(name != null && !name.isEmpty(),
+            "Illegal Argument, name cannot be empty.");
         this.name = name;
     }
 
@@ -64,7 +69,8 @@ public class User {
     }
 
     public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
+        this.birthdate = Preconditions.checkNotNull(birthdate,
+            "Illegal Argument, birthdate cannot be NULL.");
     }
 
     public List<Book> getBooks() {
@@ -72,7 +78,8 @@ public class User {
     }
 
     public void setBooks(List<Book> books) {
-        this.books = books;
+        this.books = Preconditions.checkNotNull(books,
+            "Illegal Argument, books cannot be NULL.");
     }
 
     /**
