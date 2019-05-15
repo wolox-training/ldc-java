@@ -83,29 +83,26 @@ public class BookController {
         }
     }
 
-    @GetMapping("/search")
-    public List<Book> findByPublisherGenreAndYear(@RequestParam("publisher") String publisher,
-        @RequestParam("genre") String genre, @RequestParam("year") String year) {
-        return bookRepository
-            .findAllByPublisherAndGenreAndYear(publisher, genre, year)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Not found")
-            );
-    }
-
     @GetMapping
     @ResponseBody
     public List<Book> getBooks(@RequestParam(required = false, defaultValue = "") String id,
         @RequestParam(required = false, defaultValue = "") String genre,
         @RequestParam(required = false, defaultValue = "") String author,
         @RequestParam(required = false, defaultValue = "") String image,
+        @RequestParam(required = false, defaultValue = "") String title,
         @RequestParam(required = false, defaultValue = "") String subtitle,
         @RequestParam(required = false, defaultValue = "") String publisher,
         @RequestParam(required = false, defaultValue = "") String fromYear,
         @RequestParam(required = false, defaultValue = "") String toYear,
         @RequestParam(required = false, defaultValue = "") String pages,
         @RequestParam(required = false, defaultValue = "") String isbn) {
-        return null;
+        return bookRepository
+            .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
+                fromYear, toYear,
+                pages, isbn)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Not found")
+            );
     }
 
 
