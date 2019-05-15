@@ -2,12 +2,12 @@ package wolox.training.model;
 
 import com.google.common.base.Preconditions;
 import java.util.List;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -18,28 +18,28 @@ public class Book {
 
     private String genre;
 
-    @Column(nullable = false)
+    @NotNull
     private String author;
 
-    @Column(nullable = false)
+    @NotNull
     private String image;
 
-    @Column(nullable = false)
+    @NotNull
     private String title;
 
-    @Column(nullable = false)
+    @NotNull
     private String subtitle;
 
-    @Column(nullable = false)
+    @NotNull
     private String publisher;
 
-    @Column(nullable = false)
+    @NotNull
     private String year;
 
-    @Column(nullable = false)
+    @NotNull
     private Integer pages;
 
-    @Column(nullable = false)
+    @NotNull
     private String isbn;
 
     @ManyToMany(mappedBy = "books")
@@ -51,11 +51,6 @@ public class Book {
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = Preconditions.checkNotNull(id,
-            "Illegal Argument, id cannot be NULL.");
     }
 
     public String getGenre() {
@@ -71,8 +66,9 @@ public class Book {
     }
 
     public void setAuthor(String author) {
-        this.author = Preconditions.checkNotNull(author,
-            "Illegal Argument, author cannot be NULL.");
+        Preconditions.checkArgument(author != null && !author.isEmpty(),
+            "Illegal Argument, author cannot be empty.");
+        this.author = author;
     }
 
     public String getImage() {
@@ -80,8 +76,9 @@ public class Book {
     }
 
     public void setImage(String image) {
-        this.image = Preconditions.checkNotNull(image,
-            "Illegal Argument, image cannot be NULL.");
+        Preconditions.checkArgument(image != null && !image.isEmpty(),
+            "Illegal Argument, image cannot be empty.");
+        this.image = image;
     }
 
     public String getTitle() {
@@ -89,8 +86,9 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        this.title = Preconditions.checkNotNull(title,
-            "Illegal Argument, title cannot be NULL.");
+        Preconditions.checkArgument(title != null && !title.isEmpty(),
+            "Illegal Argument, title cannot be empty.");
+        this.title = title;
     }
 
     public String getSubtitle() {
@@ -98,8 +96,9 @@ public class Book {
     }
 
     public void setSubtitle(String subtitle) {
-        this.subtitle = Preconditions.checkNotNull(subtitle,
-            "Illegal Argument, subtitle cannot be NULL.");
+        Preconditions.checkArgument(subtitle != null && !subtitle.isEmpty(),
+            "Illegal Argument, subtitle cannot be empty.");
+        this.subtitle = subtitle;
     }
 
     public String getPublisher() {
@@ -107,8 +106,9 @@ public class Book {
     }
 
     public void setPublisher(String publisher) {
-        this.publisher = Preconditions.checkNotNull(publisher,
-            "Illegal Argument, publisher cannot be NULL.");
+        Preconditions.checkArgument(publisher != null && !publisher.isEmpty(),
+            "Illegal Argument, publisher cannot be empty.");
+        this.publisher = publisher;
     }
 
     public String getYear() {
@@ -116,8 +116,9 @@ public class Book {
     }
 
     public void setYear(String year) {
-        this.year = Preconditions.checkNotNull(year,
-            "Illegal Argument, year cannot be NULL.");
+        Preconditions.checkArgument(year != null && !year.isEmpty(),
+            "Illegal Argument, year cannot be empty.");
+        this.year = year;
     }
 
     public Integer getPages() {
@@ -135,7 +136,8 @@ public class Book {
     }
 
     public void setIsbn(String isbn) {
-        this.isbn = Preconditions.checkNotNull(isbn,
-            "Illegal Argument, isbn cannot be NULL.");
+        Preconditions.checkArgument(isbn != null && !isbn.isEmpty(),
+            "Illegal Argument, isbn cannot be empty.");
+        this.isbn = isbn;
     }
 }

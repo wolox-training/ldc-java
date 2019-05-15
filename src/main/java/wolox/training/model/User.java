@@ -6,15 +6,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 
 @Entity
@@ -25,21 +23,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false)
+    @NotNull
     private String username;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private LocalDate birthdate;
 
-    @Column(nullable = false)
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "users_book",
-        joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "users_id",
-            referencedColumnName = "id"))
+    @NotNull
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private List<Book> books;
 
     public User() {
@@ -50,18 +44,14 @@ public class User {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = Preconditions.checkNotNull(id,
-            "Illegal Argument, id cannot be NULL.");
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
-        this.username = Preconditions.checkNotNull(username,
-            "Illegal Argument, username cannot be NULL.");
+        Preconditions.checkArgument(username != null && !username.isEmpty(),
+            "Illegal Argument, username cannot be empty.");
+        this.username = username;
     }
 
     public String getName() {
@@ -69,8 +59,9 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name,
-            "Illegal Argument, name cannot be NULL.");
+        Preconditions.checkArgument(name != null && !name.isEmpty(),
+            "Illegal Argument, name cannot be empty.");
+        this.name = name;
     }
 
     public LocalDate getBirthdate() {
@@ -83,7 +74,7 @@ public class User {
     }
 
     public List<Book> getBooks() {
-        return (List<Book>) Collections.unmodifiableCollection(books);
+        return (List<Book>) Collections.unmodifiableList(books);
     }
 
     public void setBooks(List<Book> books) {
