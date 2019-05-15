@@ -20,4 +20,12 @@ public interface BookRepository extends CrudRepository<Book, Long> {
     Optional<List<Book>> findAllByPublisherAndGenreAndYear(@Param("publisher") String publisher,
         @Param("genre") String genre, @Param("year") String year);
 
+    @Query("SELECT b FROM Book b")
+    Optional<List<Book>> findAllByEveryField(@Param("genre") String genre,
+        @Param("author") String author,
+        @Param("image") String image, @Param("title") String title,
+        @Param("subtitle") String subtitle,
+        @Param("publisher") String publisher, @Param("year") String year,
+        @Param("pages") String pages, @Param("isbn") String isbn);
+
 }
