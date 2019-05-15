@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,11 +94,16 @@ public class UserController {
 
     @GetMapping("/search")
     public List<User> findByBirthdateAndName(@RequestParam("from") String from,
-        @RequestParam("to") String to, @RequestParam("name") String name) {
+        @RequestParam("to") String to, @RequestParam("name") String name,
+        @RequestParam(required = false, defaultValue = "name") String sort,
+        @RequestParam(required = false, defaultValue = "0") Integer pageNumber,
+        @RequestParam(required = false, defaultValue = "5") Integer numberOfElements) {
+        Pageable customPageable = PageRequest.of(pageNumber, numberOfElements, Sort.by(sort));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         return userRepository
-            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate.parse(from, formatter),
-                LocalDate.parse(to, formatter), name).
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
+                LocalDate.parse(from, formatter),
+                LocalDate.parse(to, formatter), name, customPageable).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Not found"));
     }

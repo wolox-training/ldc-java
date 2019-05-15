@@ -12,6 +12,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.training.model.Book;
 import wolox.training.repositories.BookRepository;
@@ -46,13 +49,14 @@ public class BookRepositoryTest {
 
     @Test
     public void whenFindBookByAuthorAndExists_thenBookIsReturned() {
-        Book bookFromDatabase = bookRepository.findByAuthorIgnoreCase("Carlitos").orElseGet(null);
+        Book bookFromDatabase = bookRepository.findFirstByAuthorIgnoreCase("Carlitos")
+            .orElseGet(null);
         assertThat(bookFromDatabase).isEqualToComparingFieldByField(oneTestBook);
     }
 
     @Test
     public void whenCreateBook_thenBookIsPersisted() {
-        Book persistedBook = bookRepository.findByAuthorIgnoreCase("Carlitos").orElse(null);
+        Book persistedBook = bookRepository.findFirstByAuthorIgnoreCase("Carlitos").orElse(null);
         assertThat(persistedBook.getAuthor().equals(oneTestBook.getAuthor()));
         assertThat(persistedBook.getGenre().equals(oneTestBook.getGenre()));
         assertThat(persistedBook.getImage().equals(oneTestBook.getImage()));
@@ -114,47 +118,56 @@ public class BookRepositoryTest {
 
     @Test
     public void whenFindByEveryField_thenBookIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = bookRepository
             .findAllByEveryField(String.valueOf(oneTestBook.getId()), oneTestBook.getGenre(),
                 oneTestBook.getAuthor(),
                 oneTestBook.getImage(), oneTestBook.getTitle(), oneTestBook.getSubtitle(),
                 oneTestBook.getPublisher(), oneTestBook.getYear(), oneTestBook.getYear(),
-                oneTestBook.getPages().toString(), oneTestBook.getIsbn()).get();
+                oneTestBook.getPages().toString(), oneTestBook.getIsbn(), customPageable).get();
         Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
     @Test
     public void whenFindByOneSingleFieldAndExists_thenBookIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = bookRepository
             .findAllByEveryField("", oneTestBook.getGenre(), "", "", "",
-                "", "", "", "", "", "").get();
+                "", "", "", "", "", "",
+                customPageable).get();
         Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
     @Test
     public void whenFindWithoutSpecificData_thenEveryBookIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = bookRepository
             .findAllByEveryField("", "", "", "", "",
-                "", "", "", "", "", "").get();
+                "", "", "", "", "", "",
+                customPageable).get();
         assertThat(books.size() == 1).isTrue();
     }
 
     @Test
     public void whenFindByCorrectFromYearAndToYear_thenBookIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = bookRepository
             .findAllByEveryField("", "", "", "", "",
-                "", "", "2004", "2006", "", "").get();
+                "", "", "2004", "2006", "", "",
+                customPageable).get();
         Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
     @Test
     public void whenFindByIncorrectFromYearAndToYear_thenEmptyOptionalIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         Optional<List<Book>> books = bookRepository
             .findAllByEveryField("", "", "", "", "",
-                "", "", "2003", "2004", "", "");
+                "", "", "2003", "2004", "", "",
+                customPageable);
         assertThat(books.isPresent()).isFalse();
     }
 

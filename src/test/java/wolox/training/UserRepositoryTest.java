@@ -13,6 +13,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import wolox.training.model.Book;
 import wolox.training.model.User;
@@ -87,11 +90,14 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByBirthdateAndName_thenUserIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         LocalDate to = LocalDate.parse("2010-12-31", formatter);
         List<User> users = userRepository
-            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "Rovi").get();
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "Rovi",
+                customPageable)
+            .get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
@@ -99,11 +105,14 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByBirthdateAndNull_thenUserIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         LocalDate to = LocalDate.parse("2010-12-31", formatter);
         List<User> users = userRepository
-            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, null).get();
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, null,
+                customPageable)
+            .get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
@@ -111,9 +120,10 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByNameAndNull_thenUserIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
-                null, null, "Rovi").get();
+                null, null, "Rovi", customPageable).get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
@@ -121,11 +131,12 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByFromAndNulls_thenUserIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
-                from, null, null).get();
+                from, null, null, customPageable).get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
@@ -133,11 +144,12 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByToAndNulls_thenUserIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate to = LocalDate.parse("2005-12-01", formatter);
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
-                null, to, null).get();
+                null, to, null, customPageable).get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
