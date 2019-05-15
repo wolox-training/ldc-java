@@ -37,6 +37,7 @@ public class UserRepositoryTest {
     private TestEntityManager entityManager;
 
     private User oneTestUser;
+    private User anotherTestUser;
 
     @Before
     public void setUp() {
@@ -58,6 +59,13 @@ public class UserRepositoryTest {
         oneTestUser.setBirthdate(LocalDate.parse("2000-03-27"));
         oneTestUser.addBook(oneTestBook);
         userRepository.save(oneTestUser);
+        anotherTestUser = new User();
+        anotherTestUser.setUsername("aleblanco");
+        anotherTestUser.setPassword("pass");
+        anotherTestUser.setName("Alejandro Blanco");
+        anotherTestUser.setBirthdate(LocalDate.parse("1990-03-27"));
+        anotherTestUser.addBook(oneTestBook);
+        userRepository.save(anotherTestUser);
     }
 
     @Test
@@ -90,7 +98,7 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByBirthdateAndName_thenUserIsReturned() {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("id"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         LocalDate to = LocalDate.parse("2010-12-31", formatter);
@@ -105,7 +113,7 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByBirthdateAndNull_thenUserIsReturned() {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("id"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         LocalDate to = LocalDate.parse("2010-12-31", formatter);
@@ -120,7 +128,7 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByNameAndNull_thenUserIsReturned() {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("id"));
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
                 null, null, "Rovi", customPageable).get();
@@ -131,7 +139,7 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByFromAndNulls_thenUserIsReturned() {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("id"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         List<User> users = userRepository
@@ -144,7 +152,7 @@ public class UserRepositoryTest {
 
     @Test
     public void whenFindByToAndNulls_thenUserIsReturned() {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("id"));
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate to = LocalDate.parse("2005-12-01", formatter);
         List<User> users = userRepository
@@ -153,6 +161,35 @@ public class UserRepositoryTest {
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
+    }
+
+    @Test
+    public void whenSortElements_thenCorrectOrderedListIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("name"));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate from = LocalDate.parse("1980-12-01", formatter);
+        LocalDate to = LocalDate.parse("2010-12-31", formatter);
+        List<User> users = userRepository
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, null,
+                customPageable)
+            .get();
+        User firstUser = users.get(0);
+        User secondUser = users.get(1);
+        assertThat(firstUser.getUsername().equals(anotherTestUser.getUsername())).isTrue();
+        assertThat(secondUser.getUsername().equals(oneTestUser.getUsername())).isTrue();
+    }
+
+    @Test
+    public void whenChangePageElementsNumber_thenCorrectSizedListIsReturned() {
+        Pageable customPageable = PageRequest.of(0, 1, Sort.by("name"));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate from = LocalDate.parse("1980-12-01", formatter);
+        LocalDate to = LocalDate.parse("2010-12-31", formatter);
+        List<User> users = userRepository
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, null,
+                customPageable)
+            .get();
+        assertThat(users.size() == 1).isTrue();
     }
 
 }

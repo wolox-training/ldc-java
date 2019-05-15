@@ -157,7 +157,7 @@ public class BookControllerTest {
 
     @WithMockUser
     @Test
-    public void whenFindAndByEveryFieldAndExists_thenReturnOk() throws Exception {
+    public void whenFindByEveryFieldAndExists_thenReturnOk() throws Exception {
         Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = new ArrayList<>();
         books.add(oneTestBook);
