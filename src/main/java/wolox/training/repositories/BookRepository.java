@@ -15,8 +15,9 @@ public interface BookRepository extends CrudRepository<Book, Long> {
 
     Optional<Book> findByIsbn(String isbn);
 
-    @Query("SELECT b FROM Book b WHERE b.publisher = :publisher OR b.genre = :genre"
-        + " OR b.year = :year")
+    @Query(
+        "SELECT b FROM Book b WHERE (b.publisher = :publisher OR :publisher IS NULL) AND "
+            + "(b.genre = :genre OR :genre IS NULL) AND (b.year = :year OR :year IS NULL)")
     Optional<List<Book>> findAllByPublisherAndGenreAndYear(@Param("publisher") String publisher,
         @Param("genre") String genre, @Param("year") String year);
 
