@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import wolox.training.exceptions.UserIdMismatchException;
 import wolox.training.model.Book;
 import wolox.training.model.User;
+import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 import wolox.training.service.UserService;
 
@@ -30,6 +31,8 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     @Autowired
     private UserService userService;
@@ -47,13 +50,17 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @PostMapping("/{userId}/books")
+    @PostMapping("/{userId}/books/{bookId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addBook(@PathVariable Long userId, @RequestBody Book book) {
+    public void addBook(@PathVariable Long userId, @PathVariable Long bookId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "User with id " + userId + " not found"));
+        Book book = bookRepository.findById(bookId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Book with id " + bookId + " not found"));
         user.addBook(book);
+        userRepository.save(user);
     }
 
     @DeleteMapping("/{id}")
@@ -64,12 +71,16 @@ public class UserController {
         userRepository.deleteById(id);
     }
 
-    @DeleteMapping("/{userId}/books")
-    public void removeBook(@PathVariable Long userId, @RequestBody Book book) {
+    @DeleteMapping("/{userId}/books/{bookId}")
+    public void removeBook(@PathVariable Long userId, @PathVariable Long bookId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "User with id " + userId + " not found"));
+        Book book = bookRepository.findById(bookId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Book with id " + bookId + " not found"));
         user.removeBook(book);
+        userRepository.save(user);
     }
 
     @PutMapping("/{id}")
@@ -90,8 +101,10 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public List<User> findByBirthdateAndName(@RequestParam("from") String from,
-        @RequestParam("to") String to, @RequestParam("name") String name) {
+    public List<User> findByBirthdateAndName(
+        @RequestParam(required = false, defaultValue = "0000-01-01") String from,
+        @RequestParam(required = false, defaultValue = "9999-12-31") String to,
+        @RequestParam(required = false, defaultValue = "") String name) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         return userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate.parse(from, formatter),

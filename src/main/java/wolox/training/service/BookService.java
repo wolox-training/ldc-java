@@ -1,9 +1,10 @@
 package wolox.training.service;
 
 import java.util.Optional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.model.Book;
 import wolox.training.model.BookDTO;
 import wolox.training.repositories.BookRepository;
@@ -17,34 +18,31 @@ public class BookService {
     @Autowired
     private OpenLibraryService openLibraryService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
     /**
-     * Build an Optional<BookDTO> from the Optional<BookDTO>
+     * Build a Book from the BookDTO
      *
-     * @param optionalBookDTO is the BookDTO built from the JSON response (If exists)
-     * @return Optional<Book> with the book if the book exists, or Optional.empty otherwise
+     * @param bookDto is the BookDTO built from the JSON response
+     * @return {@link Book}
      */
-    private Optional<Book> convertBookDTOToBook(Optional<BookDTO> optionalBookDTO) {
-        try {
-            Book book = new Book();
-            BookDTO bookDTO = optionalBookDTO.orElseThrow(BookNotFoundException::new);
-            book.setIsbn(bookDTO.getIsbn());
-            book.setAuthor(bookDTO.getAuthors());
-            book.setImage(bookDTO.getImage());
-            book.setYear(bookDTO.getPublishDate());
-            book.setPublisher(bookDTO.getPublisher());
-            book.setSubtitle(bookDTO.getSubtitle());
-            book.setTitle(bookDTO.getTitle());
-            book.setPages(bookDTO.getPages());
-            return Optional.of(book);
-        } catch (BookNotFoundException ex) {
-            return Optional.empty();
-        }
+    private Book convertToEntity(BookDTO bookDto) {
+        return modelMapper.map(bookDto, Book.class);
     }
 
     public Optional<Book> findByIsbn(String isbn) {
         Optional<BookDTO> optionalBookDTO = openLibraryService.bookInfo(isbn);
-        Optional<Book> optionalBook = this.convertBookDTOToBook(optionalBookDTO);
-        bookRepository.save(optionalBook.get());
+        Optional<Book> optionalBook = optionalBookDTO.map((bookDTO) -> {
+            Book book = this.convertToEntity(bookDTO);
+            bookRepository.save(book);
+            return book;
+        });
         return optionalBook;
     }
 

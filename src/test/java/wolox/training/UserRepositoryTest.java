@@ -60,11 +60,10 @@ public class UserRepositoryTest {
     @Test
     public void whenCreateUser_thenUserIsPersisted() {
         User persistedUser = userRepository.findFirstByUsername("carlitosbala").orElse(null);
-        assertThat(persistedUser.getUsername().equals(oneTestUser.getUsername()));
-        assertThat(persistedUser.getName().equals(oneTestUser.getName()));
-        assertThat(persistedUser.getBirthdate().equals(oneTestUser.getBirthdate()));
-        assertThat(persistedUser.getBooks().equals(oneTestUser.getBooks()));
-        assertThat(persistedUser.getPassword().equals(oneTestUser.getPassword()));
+        assertThat(persistedUser.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(persistedUser.getName().equals(oneTestUser.getName())).isTrue();
+        assertThat(persistedUser.getBirthdate().equals(oneTestUser.getBirthdate())).isTrue();
+        assertThat(persistedUser.getBooks().size() == oneTestUser.getBooks().size()).isTrue();
     }
 
     @Test(expected = NullPointerException.class)
@@ -103,7 +102,7 @@ public class UserRepositoryTest {
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         LocalDate to = LocalDate.parse("2010-12-31", formatter);
         List<User> users = userRepository
-            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, null).get();
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "").get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
@@ -125,7 +124,7 @@ public class UserRepositoryTest {
         LocalDate from = LocalDate.parse("1980-12-01", formatter);
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
-                from, null, null).get();
+                from, null, "").get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
@@ -137,7 +136,7 @@ public class UserRepositoryTest {
         LocalDate to = LocalDate.parse("2005-12-01", formatter);
         List<User> users = userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
-                null, to, null).get();
+                null, to, "").get();
         User user = users.get(0);
         assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
