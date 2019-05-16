@@ -25,9 +25,11 @@ import wolox.training.repositories.BookRepository;
 public class BookRepositoryTest {
 
     @Autowired
+    @SuppressWarnings("unused")
     private BookRepository bookRepository;
 
     @Autowired
+    @SuppressWarnings("unused")
     private TestEntityManager entityManager;
 
     private Book oneTestBook;
@@ -80,37 +82,37 @@ public class BookRepositoryTest {
         assertThat(persistedBook.getYear().equals(oneTestBook.getYear())).isTrue();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutAuthor_thenThrowException() {
         oneTestBook.setAuthor(null);
         bookRepository.save(oneTestBook);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutImage_thenThrowException() {
         oneTestBook.setImage(null);
         bookRepository.save(oneTestBook);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutTitle_thenThrowException() {
         oneTestBook.setTitle(null);
         bookRepository.save(oneTestBook);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutSubtitle_thenThrowException() {
         oneTestBook.setSubtitle(null);
         bookRepository.save(oneTestBook);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutPublisher_thenThrowException() {
         oneTestBook.setPublisher(null);
         bookRepository.save(oneTestBook);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutYear_thenThrowException() {
         oneTestBook.setYear(null);
         bookRepository.save(oneTestBook);
@@ -122,7 +124,7 @@ public class BookRepositoryTest {
         bookRepository.save(oneTestBook);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenCreateBookWithoutIsbn_thenThrowException() {
         oneTestBook.setIsbn(null);
         bookRepository.save(oneTestBook);

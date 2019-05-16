@@ -29,12 +29,15 @@ import wolox.training.service.BookService;
 public class BookController {
 
     @Autowired
+    @SuppressWarnings("unused")
     private BookRepository bookRepository;
 
     @Autowired
+    @SuppressWarnings("unused")
     private BookService bookService;
 
     @GetMapping("/{id}")
+    @SuppressWarnings("unused")
     public Book findOne(@PathVariable Long id) {
         return bookRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

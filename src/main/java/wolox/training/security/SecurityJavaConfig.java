@@ -15,13 +15,19 @@ import wolox.training.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@SuppressWarnings("unused")
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String BOOKS_URL = "/api/books";
+    private static final String USERS_URL = "/api/users";
+    private static final String ALL_PATTERNS = "/**";
+
     @Autowired
+    @SuppressWarnings("unused")
     private CustomUserDetailsService userDetailsService;
 
     @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
     }
 
@@ -48,14 +54,14 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
             .exceptionHandling()
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/api/books/**").authenticated()
-            .antMatchers(HttpMethod.GET, "/api/users/**").authenticated()
-            .antMatchers(HttpMethod.DELETE, "/api/books/**").authenticated()
-            .antMatchers(HttpMethod.DELETE, "/api/users/**").authenticated()
-            .antMatchers(HttpMethod.PUT, "/api/books/**").authenticated()
-            .antMatchers(HttpMethod.PUT, "/api/users/**").authenticated()
-            .antMatchers(HttpMethod.POST, "/api/books").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/users").permitAll()
+            .antMatchers(HttpMethod.GET, BOOKS_URL + ALL_PATTERNS).authenticated()
+            .antMatchers(HttpMethod.GET, USERS_URL + ALL_PATTERNS).authenticated()
+            .antMatchers(HttpMethod.DELETE, BOOKS_URL + ALL_PATTERNS).authenticated()
+            .antMatchers(HttpMethod.DELETE, USERS_URL + ALL_PATTERNS).authenticated()
+            .antMatchers(HttpMethod.PUT, BOOKS_URL + ALL_PATTERNS).authenticated()
+            .antMatchers(HttpMethod.PUT, USERS_URL + ALL_PATTERNS).authenticated()
+            .antMatchers(HttpMethod.POST, BOOKS_URL).permitAll()
+            .antMatchers(HttpMethod.POST, USERS_URL).permitAll()
             .and()
             .formLogin()
             .and()

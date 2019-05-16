@@ -40,21 +40,27 @@ import wolox.training.service.UserService;
 public class BookControllerTest {
 
     @Autowired
+    @SuppressWarnings("unused")
     private MockMvc mvc;
 
     @MockBean
+    @SuppressWarnings("unused")
     private BookRepository mockBookRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private UserRepository mockUserRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private BookService mockBookService;
 
     @MockBean
+    @SuppressWarnings("unused")
     private UserService mockUserService;
 
     @MockBean
+    @SuppressWarnings("unused")
     private CustomUserDetailsService mockCustomUserDetailsService;
 
     private Book oneTestBook;
@@ -167,7 +173,8 @@ public class BookControllerTest {
             "259", "4578-8665", customPageable)).thenReturn(Optional.of(books));
         String url = ("/api/books?id=1&genre=Terror&author=Carlitos&image=unaImagen&"
             + "title=Las aventuras terrorificas de Carlitos&subtitle=CarlitosWay&"
-            + "publisher=LaGuitarra&fromYear=2005&toYear=2005&pages=259&isbn=4578-8665");
+            + "publisher=LaGuitarra&fromYear=2005&toYear=2005&pages=259&isbn=4578-8665&"
+            + "page=0&size=5&sort=title");
         mvc.perform(get(url)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());

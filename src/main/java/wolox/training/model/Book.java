@@ -14,6 +14,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @SuppressWarnings("unused")
     private long id;
 
     private String genre;
@@ -43,6 +44,7 @@ public class Book {
     private String isbn;
 
     @ManyToMany(mappedBy = "books")
+    @SuppressWarnings("unused")
     private List<User> users;
 
     public Book() {
@@ -139,5 +141,9 @@ public class Book {
         Preconditions.checkArgument(isbn != null && !isbn.isEmpty(),
             "Illegal Argument, isbn cannot be empty.");
         this.isbn = isbn;
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 }

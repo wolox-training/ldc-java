@@ -19,7 +19,7 @@ public class CustomUserDetails implements UserDetails {
     /* For now, only the role USER will be used */
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        final Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+        final Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         grantedAuthorities.add(new SimpleGrantedAuthority("USER"));
         return grantedAuthorities;
     }

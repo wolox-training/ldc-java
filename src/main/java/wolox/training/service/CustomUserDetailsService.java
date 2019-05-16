@@ -12,6 +12,7 @@ import wolox.training.security.CustomUserDetails;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
+    @SuppressWarnings("unused")
     private UserRepository userRepository;
 
     @Override

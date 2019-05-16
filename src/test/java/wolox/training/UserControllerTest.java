@@ -36,21 +36,27 @@ import wolox.training.service.UserService;
 public class UserControllerTest {
 
     @Autowired
+    @SuppressWarnings("unused")
     private MockMvc mvc;
 
     @MockBean
+    @SuppressWarnings("unused")
     private BookRepository mockBookRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private UserRepository mockUserRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private BookService mockBookService;
 
     @MockBean
+    @SuppressWarnings("unused")
     private UserService mockUserService;
 
     @MockBean
+    @SuppressWarnings("unused")
     private CustomUserDetailsService mockCustomUserDetailsService;
 
     private User oneTestUser;

@@ -11,9 +11,11 @@ import wolox.training.repositories.UserRepository;
 public class UserService {
 
     @Autowired
+    @SuppressWarnings("unused")
     private UserRepository userRepository;
 
     @Autowired
+    @SuppressWarnings("unused")
     private PasswordEncoder passwordEncoder;
 
 

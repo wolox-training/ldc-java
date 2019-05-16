@@ -31,11 +31,15 @@ import wolox.training.service.UserService;
 public class UserController {
 
     @Autowired
+    @SuppressWarnings("unused")
     private UserRepository userRepository;
+
     @Autowired
+    @SuppressWarnings("unused")
     private BookRepository bookRepository;
 
     @Autowired
+    @SuppressWarnings("unused")
     private UserService userService;
 
     @GetMapping("/{id}")

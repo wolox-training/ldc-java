@@ -13,15 +13,19 @@ import wolox.training.repositories.BookRepository;
 public class BookService {
 
     @Autowired
+    @SuppressWarnings("unused")
     private BookRepository bookRepository;
 
     @Autowired
+    @SuppressWarnings("unused")
     private OpenLibraryService openLibraryService;
 
     @Autowired
+    @SuppressWarnings("unused")
     private ModelMapper modelMapper;
 
     @Bean
+    @SuppressWarnings("unused")
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
@@ -38,12 +42,11 @@ public class BookService {
 
     public Optional<Book> findByIsbn(String isbn) {
         Optional<BookDTO> optionalBookDTO = openLibraryService.bookInfo(isbn);
-        Optional<Book> optionalBook = optionalBookDTO.map((bookDTO) -> {
+        return optionalBookDTO.map(bookDTO -> {
             Book book = this.convertToEntity(bookDTO);
             bookRepository.save(book);
             return book;
         });
-        return optionalBook;
     }
 
 }

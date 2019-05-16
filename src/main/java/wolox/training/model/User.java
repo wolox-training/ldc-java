@@ -23,6 +23,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @SuppressWarnings("unused")
     private long id;
 
     @NotNull
@@ -100,8 +101,8 @@ public class User {
      * Add a book to the books of the user. If the book already exists, then a
      * BookAlreadyOwnedException is thrown.
      *
-     * @param {@link Book}
-     * @throws {@link BookAlreadyOwnedException}
+     * @param book {@link Book}
+     * @throws BookAlreadyOwnedException if the book is already owned by the user
      */
     public void addBook(Book book) {
         if (!books.contains(book)) {
@@ -114,7 +115,7 @@ public class User {
     /**
      * Remove a book from the books of the user. If the book doesn't exist, nothing happends
      *
-     * @param {@link Book}
+     * @param book {@link Book}
      */
     public void removeBook(Book book) {
         books.remove(book);
