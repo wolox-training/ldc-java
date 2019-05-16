@@ -1,5 +1,6 @@
 package wolox.training;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,6 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +65,7 @@ public class BookControllerTest {
         oneTestBook.setIsbn("4578-8665");
         oneTestBook.setPages(259);
         oneTestBook.setPublisher("LaGuitarra");
-        oneTestBook.setSubtitle("Carlito's Way");
+        oneTestBook.setSubtitle("CarlitosWay");
         oneTestBook.setTitle("Las aventuras terrorificas de Carlitos");
         oneTestBook.setYear("2005");
     }
@@ -146,6 +150,38 @@ public class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestJson))
             .andExpect(status().isUnauthorized());
+    }
+
+    @WithMockUser
+    @Test
+    public void whenFindAndByEveryFieldAndExists_thenReturnOk() throws Exception {
+        List<Book> books = new ArrayList<>();
+        books.add(oneTestBook);
+        when(mockBookRepository.findAllByEveryField("1", "Terror", "Carlitos",
+            "unaImagen", "Las aventuras terrorificas de Carlitos",
+            "CarlitosWay", "LaGuitarra", "2005", "2005",
+            "259", "4578-8665")).thenReturn(Optional.of(books));
+        String url = ("/api/books?id=1&genre=Terror&author=Carlitos&image=unaImagen&"
+            + "title=Las aventuras terrorificas de Carlitos&subtitle=CarlitosWay&"
+            + "publisher=LaGuitarra&fromYear=2005&toYear=2005&pages=259&isbn=4578-8665");
+        mvc.perform(get(url)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @WithMockUser
+    @Test
+    public void whenFindAndNotExists_thenReturnNotFound() throws Exception {
+        List<Book> books = new ArrayList<>();
+        books.add(oneTestBook);
+        when(mockBookRepository.findAllByEveryField("1", "Terror", "Carlitos",
+            "unaImagen", "Las aventuras terrorificas de Carlitos",
+            "CarlitosWay", "LaGuitarra", "2005", "2005",
+            "259", "4578-8665")).thenReturn(Optional.of(books));
+        String url = ("/api/books?genre=Comedia&author=Carlitos");
+        mvc.perform(get(url)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
     }
 
 }

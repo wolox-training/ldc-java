@@ -3,6 +3,7 @@ package wolox.training;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -112,39 +113,49 @@ public class BookRepositoryTest {
     }
 
     @Test
-    public void whenFindByPublisherGenreAndYear_thenBookIsReturned() {
+    public void whenFindByEveryField_thenBookIsReturned() {
         List<Book> books = bookRepository
-            .findAllByPublisherAndGenreAndYear(oneTestBook.getPublisher(), oneTestBook.getGenre(),
-                oneTestBook.getYear()).get();
+            .findAllByEveryField(String.valueOf(oneTestBook.getId()), oneTestBook.getGenre(),
+                oneTestBook.getAuthor(),
+                oneTestBook.getImage(), oneTestBook.getTitle(), oneTestBook.getSubtitle(),
+                oneTestBook.getPublisher(), oneTestBook.getYear(), oneTestBook.getYear(),
+                oneTestBook.getPages().toString(), oneTestBook.getIsbn()).get();
         Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
     @Test
-    public void whenFindByPublisherAndNulls_thenBookIsReturned() {
+    public void whenFindByOneSingleFieldAndExists_thenBookIsReturned() {
         List<Book> books = bookRepository
-            .findAllByPublisherAndGenreAndYear(oneTestBook.getPublisher(), null,
-                null).get();
+            .findAllByEveryField("", oneTestBook.getGenre(), "", "", "",
+                "", "", "", "", "", "").get();
         Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
     @Test
-    public void whenFindByGenreAndNulls_thenBookIsReturned() {
+    public void whenFindWithoutSpecificData_thenEveryBookIsReturned() {
         List<Book> books = bookRepository
-            .findAllByPublisherAndGenreAndYear(null, oneTestBook.getGenre(),
-                null).get();
+            .findAllByEveryField("", "", "", "", "",
+                "", "", "", "", "", "").get();
+        assertThat(books.size() == 1).isTrue();
+    }
+
+    @Test
+    public void whenFindByCorrectFromYearAndToYear_thenBookIsReturned() {
+        List<Book> books = bookRepository
+            .findAllByEveryField("", "", "", "", "",
+                "", "", "2004", "2006", "", "").get();
         Book book = books.get(0);
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
     @Test
-    public void whenFindByYearAndNulls_thenBookIsReturned() {
-        List<Book> books = bookRepository
-            .findAllByPublisherAndGenreAndYear(null, null,
-                oneTestBook.getYear()).get();
-        Book book = books.get(0);
-        assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
+    public void whenFindByIncorrectFromYearAndToYear_thenEmptyOptionalIsReturned() {
+        Optional<List<Book>> books = bookRepository
+            .findAllByEveryField("", "", "", "", "",
+                "", "", "2003", "2004", "", "");
+        assertThat(books.isPresent()).isFalse();
     }
 
 }

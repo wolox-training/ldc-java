@@ -16,9 +16,22 @@ public interface BookRepository extends CrudRepository<Book, Long> {
     Optional<Book> findByIsbn(String isbn);
 
     @Query(
-        "SELECT b FROM Book b WHERE (b.publisher = :publisher OR :publisher IS NULL) AND "
-            + "(b.genre = :genre OR :genre IS NULL) AND (b.year = :year OR :year IS NULL)")
-    Optional<List<Book>> findAllByPublisherAndGenreAndYear(@Param("publisher") String publisher,
-        @Param("genre") String genre, @Param("year") String year);
+        "SELECT b FROM Book b WHERE (b.genre = :genre OR :genre = '') AND "
+            + " (b.author = :author OR :author = '') AND (b.image = :image OR :image = '') AND "
+            + " (b.title = :title OR :title = '') AND (b.subtitle = :subtitle OR :subtitle = '') AND "
+            + " (b.publisher = :publisher OR :publisher = '') AND "
+            + " ("
+            + "     (b.year BETWEEN :fromYear AND :toYear)"
+            + "     OR ( :fromYear = '' AND b.year <= :toYear )"
+            + "     OR ( :toYear = '' AND b.year >= :fromYear )"
+            + "     OR ( :toYear = '' AND :fromYear  = '' )"
+            + " ) AND "
+            + " (:pages = '' OR b.pages = CAST(:pages as int) ) AND "
+            + "(b.isbn = :isbn OR :isbn = '') AND  (:id = '' OR b.id = CAST(:id as int))")
+    Optional<List<Book>> findAllByEveryField(@Param("id") String id, @Param("genre") String genre,
+        @Param("author") String author, @Param("image") String image, @Param("title") String title,
+        @Param("subtitle") String subtitle, @Param("publisher") String publisher,
+        @Param("fromYear") String fromYear, @Param("toYear") String toYear,
+        @Param("pages") String pages, @Param("isbn") String isbn);
 
 }

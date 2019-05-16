@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -82,11 +83,23 @@ public class BookController {
         }
     }
 
-    @GetMapping("/search")
-    public List<Book> findByPublisherGenreAndYear(@RequestParam(required = false) String publisher,
-        @RequestParam(required = false) String genre, @RequestParam(required = false) String year) {
+    @GetMapping
+    @ResponseBody
+    public List<Book> getBooks(@RequestParam(required = false, defaultValue = "") String id,
+        @RequestParam(required = false, defaultValue = "") String genre,
+        @RequestParam(required = false, defaultValue = "") String author,
+        @RequestParam(required = false, defaultValue = "") String image,
+        @RequestParam(required = false, defaultValue = "") String title,
+        @RequestParam(required = false, defaultValue = "") String subtitle,
+        @RequestParam(required = false, defaultValue = "") String publisher,
+        @RequestParam(required = false, defaultValue = "") String fromYear,
+        @RequestParam(required = false, defaultValue = "") String toYear,
+        @RequestParam(required = false, defaultValue = "") String pages,
+        @RequestParam(required = false, defaultValue = "") String isbn) {
         return bookRepository
-            .findAllByPublisherAndGenreAndYear(publisher, genre, year)
+            .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
+                fromYear, toYear,
+                pages, isbn)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Not found")
             );
