@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
@@ -25,6 +26,10 @@ import wolox.training.model.Book;
 import wolox.training.model.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
+import wolox.training.service.BookService;
+import wolox.training.service.CustomUserDetailsService;
+import wolox.training.service.UserService;
+
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
@@ -38,6 +43,15 @@ public class UserControllerTest {
 
     @MockBean
     private UserRepository mockUserRepository;
+
+    @MockBean
+    private BookService mockBookService;
+
+    @MockBean
+    private UserService mockUserService;
+
+    @MockBean
+    private CustomUserDetailsService mockCustomUserDetailsService;
 
     private User oneTestUser;
     private Book oneTestBook;
@@ -74,6 +88,7 @@ public class UserControllerTest {
             .andExpect(status().isCreated());
     }
 
+    @WithMockUser
     @Test
     public void whenFindByIdWhichNotExists_thenNotFound() throws Exception {
         String url = ("/api/users/100");
@@ -82,6 +97,7 @@ public class UserControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @WithMockUser
     @Test
     public void whenDeleteNotExistingBook_thenNotFound() throws Exception {
         String url = ("/api/users/100");
@@ -90,6 +106,7 @@ public class UserControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @WithMockUser
     @Test(expected = NestedServletException.class)
     public void whenPutBookWithDifferentId_thenBookIdMismatchException() throws Exception {
         String url = ("/api/users/100");
@@ -103,6 +120,37 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestJson))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void whenGetWithoutUser_thenUnauthorized() throws Exception {
+        String url = ("/api/users/100");
+        mvc.perform(get(url)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenDeleteWithoutUser_thenUnauthorized() throws Exception {
+        String url = ("/api/users/100");
+        mvc.perform(delete(url)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenPutWithoutUser_thenUnauthorized() throws Exception {
+        String url = ("/api/users/100");
+        String newUsername = "newUsername";
+        oneTestUser.setUsername(newUsername);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson = ow.writeValueAsString(oneTestBook);
+        mvc.perform(put(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestJson))
+            .andExpect(status().isUnauthorized());
     }
 
 }

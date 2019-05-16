@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
@@ -23,6 +24,9 @@ import wolox.training.controller.BookController;
 import wolox.training.model.Book;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
+import wolox.training.service.BookService;
+import wolox.training.service.CustomUserDetailsService;
+import wolox.training.service.UserService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(BookController.class)
@@ -36,6 +40,15 @@ public class BookControllerTest {
 
     @MockBean
     private UserRepository mockUserRepository;
+
+    @MockBean
+    private BookService mockBookService;
+
+    @MockBean
+    private UserService mockUserService;
+
+    @MockBean
+    private CustomUserDetailsService mockCustomUserDetailsService;
 
     private Book oneTestBook;
 
@@ -66,6 +79,7 @@ public class BookControllerTest {
             .andExpect(status().isCreated());
     }
 
+    @WithMockUser
     @Test
     public void whenFindByIdWhichNotExists_thenNotFound() throws Exception {
         String url = ("/api/books/100");
@@ -74,6 +88,7 @@ public class BookControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @WithMockUser
     @Test
     public void whenDeleteNotExistingBook_thenNotFound() throws Exception {
         String url = ("/api/books/100");
@@ -82,6 +97,7 @@ public class BookControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    @WithMockUser
     @Test(expected = NestedServletException.class)
     public void whenPutBookWithDifferentId_thenBookIdMismatchException() throws Exception {
         String url = ("/api/books/100");
@@ -97,6 +113,39 @@ public class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestJson))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void whenGetWithoutUser_thenUnauthorized() throws Exception {
+        String url = ("/api/books/100");
+        mvc.perform(get(url)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenDeleteWithoutUser_thenUnauthorized() throws Exception {
+        String url = ("/api/books/100");
+        mvc.perform(delete(url)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenPutWithoutUser_thenUnauthorized() throws Exception {
+        String url = ("/api/books/100");
+        String newYear = "2010";
+        String newTitle = "Las NUEVAS aventuras terrorificas de Carlitos";
+        oneTestBook.setTitle(newTitle);
+        oneTestBook.setYear(newYear);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson = ow.writeValueAsString(oneTestBook);
+        mvc.perform(put(url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestJson))
+            .andExpect(status().isUnauthorized());
     }
 
 }
