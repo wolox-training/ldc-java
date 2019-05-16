@@ -6,7 +6,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import wolox.training.models.BookDTO;
+import wolox.training.models.DTO.BookDTO;
 
 @Service
 class OpenLibraryService {

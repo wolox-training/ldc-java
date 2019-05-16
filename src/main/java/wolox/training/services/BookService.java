@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import wolox.training.models.Book;
-import wolox.training.models.BookDTO;
+import wolox.training.models.DTO.BookDTO;
 import wolox.training.repositories.BookRepository;
 
 @Service
