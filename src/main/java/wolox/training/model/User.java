@@ -1,5 +1,7 @@
 package wolox.training.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.base.Preconditions;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +29,10 @@ public class User {
     private String username;
 
     @NotNull
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private String password;
+
+    @NotNull
     private String name;
 
     @NotNull
@@ -52,6 +58,14 @@ public class User {
         Preconditions.checkArgument(username != null && !username.isEmpty(),
             "Illegal Argument, username cannot be empty.");
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {
@@ -98,7 +112,7 @@ public class User {
     }
 
     /**
-     * Remove a book from the books of the user. If the book doesn't exist, nothing happend
+     * Remove a book from the books of the user. If the book doesn't exist, nothing happends
      *
      * @param {@link Book}
      */
