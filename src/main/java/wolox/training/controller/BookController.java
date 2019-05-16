@@ -83,8 +83,8 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<Book> findByPublisherGenreAndYear(@RequestParam("publisher") String publisher,
-        @RequestParam("genre") String genre, @RequestParam("year") String year) {
+    public List<Book> findByPublisherGenreAndYear(@RequestParam(required = false) String publisher,
+        @RequestParam(required = false) String genre, @RequestParam(required = false) String year) {
         return bookRepository
             .findAllByPublisherAndGenreAndYear(publisher, genre, year)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

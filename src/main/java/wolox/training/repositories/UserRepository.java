@@ -14,12 +14,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findFirstByUsername(String userName);
 
-    @Query("SELECT u FROM User u WHERE ("
-        + " (u.birthdate BETWEEN :dateStart AND :dateEnd)"
-        + "     OR (( cast(:dateStart as date) IS NULL AND u.birthdate <= :dateEnd ))"
-        + "     OR (( cast(:dateEnd as date) IS NULL AND u.birthdate >= :dateStart ))"
-        + "     OR (( cast(:dateEnd as date) IS NULL AND cast(:dateStart as date) IS NULL ))"
-        + " )"
+    @Query("SELECT u FROM User u WHERE u.birthdate BETWEEN :dateStart AND :dateEnd"
         + " AND ( :name = '' OR lower(u.name) LIKE lower(concat('%', :name,'%')) )")
     Optional<List<User>> findAllByBirthdateBetweenAndNameContainingIgnoreCase(
         @Param("dateStart") LocalDate dateStart, @Param("dateEnd") LocalDate dateEnd,

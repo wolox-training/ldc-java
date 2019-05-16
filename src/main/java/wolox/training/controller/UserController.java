@@ -90,8 +90,10 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public List<User> findByBirthdateAndName(@RequestParam("from") String from,
-        @RequestParam("to") String to, @RequestParam("name") String name) {
+    public List<User> findByBirthdateAndName(
+        @RequestParam(required = false, defaultValue = "0000-01-01") String from,
+        @RequestParam(required = false, defaultValue = "9999-12-31") String to,
+        @RequestParam(required = false, defaultValue = "") String name) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         return userRepository
             .findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate.parse(from, formatter),
