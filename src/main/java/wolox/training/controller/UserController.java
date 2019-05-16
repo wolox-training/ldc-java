@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,11 +105,13 @@ public class UserController {
     public List<User> findByBirthdateAndName(
         @RequestParam(required = false, defaultValue = "0000-01-01") String from,
         @RequestParam(required = false, defaultValue = "9999-12-31") String to,
-        @RequestParam(required = false, defaultValue = "") String name) {
+        @RequestParam(required = false, defaultValue = "") String name,
+        Pageable pageable) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         return userRepository
-            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(LocalDate.parse(from, formatter),
-                LocalDate.parse(to, formatter), name).
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
+                LocalDate.parse(from, formatter),
+                LocalDate.parse(to, formatter), name, pageable).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Not found"));
     }

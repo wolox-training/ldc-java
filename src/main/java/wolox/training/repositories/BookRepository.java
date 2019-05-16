@@ -2,6 +2,7 @@ package wolox.training.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +12,7 @@ import wolox.training.model.Book;
 @Repository
 public interface BookRepository extends CrudRepository<Book, Long> {
 
-    Optional<Book> findByAuthorIgnoreCase(String author);
+    Optional<Book> findFirstByAuthorIgnoreCase(String author);
 
     Optional<Book> findByIsbn(String isbn);
 
@@ -32,6 +33,6 @@ public interface BookRepository extends CrudRepository<Book, Long> {
         @Param("author") String author, @Param("image") String image, @Param("title") String title,
         @Param("subtitle") String subtitle, @Param("publisher") String publisher,
         @Param("fromYear") String fromYear, @Param("toYear") String toYear,
-        @Param("pages") String pages, @Param("isbn") String isbn);
+        @Param("pages") String pages, @Param("isbn") String isbn, Pageable pageable);
 
 }

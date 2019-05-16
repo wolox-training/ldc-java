@@ -3,6 +3,7 @@ package wolox.training.controller;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -95,11 +96,11 @@ public class BookController {
         @RequestParam(required = false, defaultValue = "") String fromYear,
         @RequestParam(required = false, defaultValue = "") String toYear,
         @RequestParam(required = false, defaultValue = "") String pages,
-        @RequestParam(required = false, defaultValue = "") String isbn) {
+        @RequestParam(required = false, defaultValue = "") String isbn,
+        Pageable pageable) {
         return bookRepository
             .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
-                fromYear, toYear,
-                pages, isbn)
+                fromYear, toYear, pages, isbn, pageable)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Not found")
             );

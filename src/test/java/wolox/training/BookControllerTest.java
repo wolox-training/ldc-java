@@ -19,6 +19,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -154,13 +157,14 @@ public class BookControllerTest {
 
     @WithMockUser
     @Test
-    public void whenFindAndByEveryFieldAndExists_thenReturnOk() throws Exception {
+    public void whenFindByEveryFieldAndExists_thenReturnOk() throws Exception {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = new ArrayList<>();
         books.add(oneTestBook);
         when(mockBookRepository.findAllByEveryField("1", "Terror", "Carlitos",
             "unaImagen", "Las aventuras terrorificas de Carlitos",
             "CarlitosWay", "LaGuitarra", "2005", "2005",
-            "259", "4578-8665")).thenReturn(Optional.of(books));
+            "259", "4578-8665", customPageable)).thenReturn(Optional.of(books));
         String url = ("/api/books?id=1&genre=Terror&author=Carlitos&image=unaImagen&"
             + "title=Las aventuras terrorificas de Carlitos&subtitle=CarlitosWay&"
             + "publisher=LaGuitarra&fromYear=2005&toYear=2005&pages=259&isbn=4578-8665");
@@ -172,12 +176,13 @@ public class BookControllerTest {
     @WithMockUser
     @Test
     public void whenFindAndNotExists_thenReturnNotFound() throws Exception {
+        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
         List<Book> books = new ArrayList<>();
         books.add(oneTestBook);
         when(mockBookRepository.findAllByEveryField("1", "Terror", "Carlitos",
             "unaImagen", "Las aventuras terrorificas de Carlitos",
             "CarlitosWay", "LaGuitarra", "2005", "2005",
-            "259", "4578-8665")).thenReturn(Optional.of(books));
+            "259", "4578-8665", customPageable)).thenReturn(Optional.of(books));
         String url = ("/api/books?genre=Comedia&author=Carlitos");
         mvc.perform(get(url)
             .contentType(MediaType.APPLICATION_JSON))
