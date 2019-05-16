@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
-import wolox.training.model.Book;
+import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 
 @RunWith(SpringRunner.class)

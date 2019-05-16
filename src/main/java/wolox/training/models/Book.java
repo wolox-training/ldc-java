@@ -1,4 +1,4 @@
-package wolox.training.model;
+package wolox.training.models;
 
 import com.google.common.base.Preconditions;
 import java.util.List;

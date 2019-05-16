@@ -1,10 +1,10 @@
-package wolox.training.service;
+package wolox.training.services;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import wolox.training.model.User;
+import wolox.training.models.User;
 import wolox.training.repositories.UserRepository;
 
 @Service

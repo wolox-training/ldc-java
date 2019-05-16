@@ -1,4 +1,4 @@
-package wolox.training.controller;
+package wolox.training.controllers;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import wolox.training.exceptions.UserIdMismatchException;
-import wolox.training.model.Book;
-import wolox.training.model.User;
+import wolox.training.models.Book;
+import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
-import wolox.training.service.UserService;
+import wolox.training.services.UserService;
 
 @RestController
 @RequestMapping("/api/users")
