@@ -1,5 +1,7 @@
 package wolox.training.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.base.Preconditions;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class User {
     private String username;
 
     @NotNull
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
 
     @NotNull
@@ -47,18 +50,14 @@ public class User {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = Preconditions.checkNotNull(id,
-            "Illegal Argument, id cannot be NULL.");
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
-        this.username = Preconditions.checkNotNull(username,
-            "Illegal Argument, username cannot be NULL.");
+        Preconditions.checkArgument(username != null && !username.isEmpty(),
+            "Illegal Argument, username cannot be empty.");
+        this.username = username;
     }
 
     public String getPassword() {
@@ -74,8 +73,9 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = Preconditions.checkNotNull(name,
-            "Illegal Argument, name cannot be NULL.");
+        Preconditions.checkArgument(name != null && !name.isEmpty(),
+            "Illegal Argument, name cannot be empty.");
+        this.name = name;
     }
 
     public LocalDate getBirthdate() {

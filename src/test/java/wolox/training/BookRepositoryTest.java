@@ -69,15 +69,15 @@ public class BookRepositoryTest {
     @Test
     public void whenCreateBook_thenBookIsPersisted() {
         Book persistedBook = bookRepository.findFirstByAuthorIgnoreCase("Carlitos").orElse(null);
-        assertThat(persistedBook.getAuthor().equals(oneTestBook.getAuthor()));
-        assertThat(persistedBook.getGenre().equals(oneTestBook.getGenre()));
-        assertThat(persistedBook.getImage().equals(oneTestBook.getImage()));
-        assertThat(persistedBook.getIsbn().equals(oneTestBook.getIsbn()));
-        assertThat(persistedBook.getPages().equals(oneTestBook.getPages()));
-        assertThat(persistedBook.getPublisher().equals(oneTestBook.getPublisher()));
-        assertThat(persistedBook.getSubtitle().equals(oneTestBook.getSubtitle()));
-        assertThat(persistedBook.getTitle().equals(oneTestBook.getTitle()));
-        assertThat(persistedBook.getYear().equals(oneTestBook.getYear()));
+        assertThat(persistedBook.getAuthor().equals(oneTestBook.getAuthor())).isTrue();
+        assertThat(persistedBook.getGenre().equals(oneTestBook.getGenre())).isTrue();
+        assertThat(persistedBook.getImage().equals(oneTestBook.getImage())).isTrue();
+        assertThat(persistedBook.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
+        assertThat(persistedBook.getPages().equals(oneTestBook.getPages())).isTrue();
+        assertThat(persistedBook.getPublisher().equals(oneTestBook.getPublisher())).isTrue();
+        assertThat(persistedBook.getSubtitle().equals(oneTestBook.getSubtitle())).isTrue();
+        assertThat(persistedBook.getTitle().equals(oneTestBook.getTitle())).isTrue();
+        assertThat(persistedBook.getYear().equals(oneTestBook.getYear())).isTrue();
     }
 
     @Test(expected = NullPointerException.class)
