@@ -20,14 +20,15 @@ public class BookDTO {
     private final static String PUBLISH_DATE_FIELD = "publish_date";
     private final static String PAGES_FIELD = "number_of_pages";
     private final static String AUTHORS_FIELD = "authors";
+
     private String isbn;
     private String title;
     private String subtitle;
     private String image;
     private String publisher;
-    private String publishDate;
+    private String year;
     private Integer pages;
-    private String authors;
+    private String author;
 
     private BookDTO() {
 
@@ -63,11 +64,11 @@ public class BookDTO {
                 bookDTO.setIsbn(isbnValue);
                 bookDTO.setTitle(titleNode.textValue());
                 bookDTO.setSubtitle(subtitleNode.textValue());
-                bookDTO.setPublishDate(publishDateNode.textValue());
+                bookDTO.setYear(publishDateNode.textValue());
                 bookDTO.setPages(pagesNode.asInt());
                 bookDTO.setImage(imageField.findPath(COVER_SIZE_FIELD).textValue());
                 bookDTO.setPublisher(publishersNode.findPath(NAME_FIELD).textValue());
-                bookDTO.setAuthors(authorsNode.findPath(NAME_FIELD).textValue());
+                bookDTO.setAuthor(authorsNode.findPath(NAME_FIELD).textValue());
                 return Optional.of(bookDTO);
             }
         } catch (IOException | NoSuchElementException ex) {
@@ -115,12 +116,12 @@ public class BookDTO {
         this.publisher = publisher;
     }
 
-    public String getPublishDate() {
-        return publishDate;
+    public String getYear() {
+        return year;
     }
 
-    public void setPublishDate(String publishDate) {
-        this.publishDate = publishDate;
+    public void setYear(String year) {
+        this.year = year;
     }
 
     public Integer getPages() {
@@ -131,12 +132,12 @@ public class BookDTO {
         this.pages = pages;
     }
 
-    public String getAuthors() {
-        return authors;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAuthors(String authors) {
-        this.authors = authors;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
 }
