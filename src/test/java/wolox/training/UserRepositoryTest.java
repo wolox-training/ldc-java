@@ -96,4 +96,50 @@ public class UserRepositoryTest {
         assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
     }
 
+    @Test
+    public void whenFindByBirthdateAndNull_thenUserIsReturned() {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate from = LocalDate.parse("1980-12-01", formatter);
+        LocalDate to = LocalDate.parse("2010-12-31", formatter);
+        List<User> users = userRepository
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(from, to, "").get();
+        User user = users.get(0);
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
+    }
+
+    @Test
+    public void whenFindByNameAndNull_thenUserIsReturned() {
+        List<User> users = userRepository
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
+                null, null, "Rovi").get();
+        User user = users.get(0);
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
+    }
+
+    @Test
+    public void whenFindByFromAndNulls_thenUserIsReturned() {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate from = LocalDate.parse("1980-12-01", formatter);
+        List<User> users = userRepository
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
+                from, null, "").get();
+        User user = users.get(0);
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
+    }
+
+    @Test
+    public void whenFindByToAndNulls_thenUserIsReturned() {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        LocalDate to = LocalDate.parse("2005-12-01", formatter);
+        List<User> users = userRepository
+            .findAllByBirthdateBetweenAndNameContainingIgnoreCase(
+                null, to, "").get();
+        User user = users.get(0);
+        assertThat(user.getUsername().equals(oneTestUser.getUsername())).isTrue();
+        assertThat(user.getName().equals(oneTestUser.getName())).isTrue();
+    }
+
 }

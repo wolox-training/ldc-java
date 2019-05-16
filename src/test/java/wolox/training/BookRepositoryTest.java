@@ -120,4 +120,31 @@ public class BookRepositoryTest {
         assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
     }
 
+    @Test
+    public void whenFindByPublisherAndNulls_thenBookIsReturned() {
+        List<Book> books = bookRepository
+            .findAllByPublisherAndGenreAndYear(oneTestBook.getPublisher(), null,
+                null).get();
+        Book book = books.get(0);
+        assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
+    }
+
+    @Test
+    public void whenFindByGenreAndNulls_thenBookIsReturned() {
+        List<Book> books = bookRepository
+            .findAllByPublisherAndGenreAndYear(null, oneTestBook.getGenre(),
+                null).get();
+        Book book = books.get(0);
+        assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
+    }
+
+    @Test
+    public void whenFindByYearAndNulls_thenBookIsReturned() {
+        List<Book> books = bookRepository
+            .findAllByPublisherAndGenreAndYear(null, null,
+                oneTestBook.getYear()).get();
+        Book book = books.get(0);
+        assertThat(book.getIsbn().equals(oneTestBook.getIsbn())).isTrue();
+    }
+
 }
