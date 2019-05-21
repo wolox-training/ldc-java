@@ -6,7 +6,7 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import wolox.training.model.User;
+import wolox.training.models.User;
 
 public class CustomUserDetails implements UserDetails {
 

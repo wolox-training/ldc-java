@@ -1,4 +1,4 @@
-package wolox.training.model;
+package wolox.training.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;

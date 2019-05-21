@@ -1,12 +1,12 @@
-package wolox.training.service;
+package wolox.training.services;
 
 import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import wolox.training.model.Book;
-import wolox.training.model.BookDTO;
+import wolox.training.models.Book;
+import wolox.training.models.DTO.BookDTO;
 import wolox.training.repositories.BookRepository;
 
 @Service
@@ -37,7 +37,11 @@ public class BookService {
      * @return {@link Book}
      */
     private Book convertToEntity(BookDTO bookDto) {
-        return modelMapper.map(bookDto, Book.class);
+        Book book = modelMapper.map(bookDto, Book.class);
+        book.setPublisher(bookDto.getPublishers().iterator().next().getName());
+        book.setAuthor(bookDto.getAuthors().iterator().next().getName());
+        book.setImage(bookDto.getImage().getUrl());
+        return book;
     }
 
     public Optional<Book> findByIsbn(String isbn) {

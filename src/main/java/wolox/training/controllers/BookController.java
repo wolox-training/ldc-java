@@ -1,4 +1,4 @@
-package wolox.training.controller;
+package wolox.training.controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import wolox.training.exceptions.BookIdMismatchException;
 import wolox.training.exceptions.RequiredFieldNotExists;
-import wolox.training.model.Book;
+import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
-import wolox.training.service.BookService;
+import wolox.training.services.BookService;
 
 @RestController
 @RequestMapping("/api/books")

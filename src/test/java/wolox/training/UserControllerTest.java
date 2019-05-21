@@ -21,14 +21,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
-import wolox.training.controller.UserController;
-import wolox.training.model.Book;
-import wolox.training.model.User;
+import wolox.training.controllers.UserController;
+import wolox.training.models.Book;
+import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
-import wolox.training.service.BookService;
-import wolox.training.service.CustomUserDetailsService;
-import wolox.training.service.UserService;
+import wolox.training.services.BookService;
+import wolox.training.services.CustomUserDetailsService;
+import wolox.training.services.UserService;
 
 
 @RunWith(SpringRunner.class)
