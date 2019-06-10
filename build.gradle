@@ -13,6 +13,13 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -25,4 +32,5 @@ dependencies {
     testCompile group: 'org.springframework.security', name: 'spring-security-test'
     compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.4.RELEASE'
     compile 'org.modelmapper:modelmapper:2.3.3'
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
