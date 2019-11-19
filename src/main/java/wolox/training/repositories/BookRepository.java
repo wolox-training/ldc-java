@@ -1,20 +1,21 @@
 package wolox.training.repositories;
 
 import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import wolox.training.models.Book;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book, Long> {
+public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
 
-    Optional<Book> findFirstByAuthorIgnoreCase(String author);
+    Book findFirstByAuthorIgnoreCase(String author);
 
-    Optional<Book> findByIsbn(String isbn);
+    Book findByIsbn(String isbn);
 
     @Query(
         "SELECT b FROM Book b WHERE (b.genre = :genre OR :genre = '') AND "
@@ -29,7 +30,7 @@ public interface BookRepository extends CrudRepository<Book, Long> {
             + " ) AND "
             + " (:pages = '' OR b.pages = CAST(:pages as int) ) AND "
             + "(b.isbn = :isbn OR :isbn = '') AND  (:id = '' OR b.id = CAST(:id as int))")
-    Optional<List<Book>> findAllByEveryField(@Param("id") String id, @Param("genre") String genre,
+    Page<Book> findAllByEveryField(@Param("id") String id, @Param("genre") String genre,
         @Param("author") String author, @Param("image") String image, @Param("title") String title,
         @Param("subtitle") String subtitle, @Param("publisher") String publisher,
         @Param("fromYear") String fromYear, @Param("toYear") String toYear,

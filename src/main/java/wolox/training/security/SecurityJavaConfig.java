@@ -7,10 +7,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import wolox.training.config.MyBasicAuthenticationEntryPoint;
 import wolox.training.services.CustomUserDetailsService;
 
 @Configuration
@@ -21,6 +23,14 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private static final String BOOKS_URL = "/api/books";
     private static final String USERS_URL = "/api/users";
     private static final String ALL_PATTERNS = "/**";
+
+    @Autowired
+    private MyBasicAuthenticationEntryPoint baep;
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Autowired
     @SuppressWarnings("unused")
@@ -38,11 +48,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(encoder());
         return authProvider;
-    }
-
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -66,6 +71,14 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
             .and()
             .logout();
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring()
+            .antMatchers(HttpMethod.POST, "/api/books")
+            .and()
+            .ignoring().antMatchers(HttpMethod.POST, "/api/users");
     }
 
 }

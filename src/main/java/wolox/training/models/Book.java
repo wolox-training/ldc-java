@@ -1,8 +1,12 @@
 package wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,13 +47,11 @@ public class Book {
     @NotNull
     private String isbn;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "books")
-    @SuppressWarnings("unused")
-    private List<User> users;
+    private List<User> users = new ArrayList<User>();
 
-    public Book() {
-
-    }
+    public Book() {}
 
     public long getId() {
         return id;
@@ -146,4 +148,5 @@ public class Book {
     public List<User> getUsers() {
         return users;
     }
+
 }

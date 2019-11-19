@@ -1,5 +1,6 @@
 package wolox.training;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,54 +13,55 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.NestedServletException;
+import wolox.training.config.SpringSecurityInitializer;
+import wolox.training.config.WebAppInitializer;
+import wolox.training.config.WebMvcConfig;
 import wolox.training.controllers.BookController;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 import wolox.training.services.BookService;
 import wolox.training.services.CustomUserDetailsService;
-import wolox.training.services.UserService;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(BookController.class)
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {WebMvcConfig.class, SpringSecurityInitializer.class, WebAppInitializer.class})
+@WebAppConfiguration
 public class BookControllerTest {
 
     @Autowired
-    @SuppressWarnings("unused")
+    private WebApplicationContext wac;
+
     private MockMvc mvc;
 
-    @MockBean
     @SuppressWarnings("unused")
     private BookRepository mockBookRepository;
 
-    @MockBean
     @SuppressWarnings("unused")
     private UserRepository mockUserRepository;
 
-    @MockBean
     @SuppressWarnings("unused")
     private BookService mockBookService;
 
-    @MockBean
-    @SuppressWarnings("unused")
-    private UserService mockUserService;
-
-    @MockBean
     @SuppressWarnings("unused")
     private CustomUserDetailsService mockCustomUserDetailsService;
 
@@ -67,6 +69,14 @@ public class BookControllerTest {
 
     @Before
     public void setUp() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(
+            SecurityMockMvcConfigurers.springSecurity()).build();
+        this.mockBookRepository = mock(BookRepository.class);
+        this.mockUserRepository = mock(UserRepository.class);
+        this.mockBookService = mock(BookService.class);
+        this.mockCustomUserDetailsService = mock(CustomUserDetailsService.class);
+        BookController.setBookRepository(mockBookRepository);
+        BookController.setBookService(mockBookService);
         oneTestBook = new Book();
         oneTestBook.setAuthor("Carlitos");
         oneTestBook.setGenre("Terror");
@@ -164,13 +174,13 @@ public class BookControllerTest {
     @WithMockUser
     @Test
     public void whenFindByEveryFieldAndExists_thenReturnOk() throws Exception {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
-        List<Book> books = new ArrayList<>();
+        Pageable customPageable = new PageRequest(0, 5, new Sort("title"));
+        List<Book> books = new ArrayList<Book>();
         books.add(oneTestBook);
         when(mockBookRepository.findAllByEveryField("1", "Terror", "Carlitos",
             "unaImagen", "Las aventuras terrorificas de Carlitos",
             "CarlitosWay", "LaGuitarra", "2005", "2005",
-            "259", "4578-8665", customPageable)).thenReturn(Optional.of(books));
+            "259", "4578-8665", customPageable)).thenReturn(new PageImpl<Book>(books));
         String url = ("/api/books?id=1&genre=Terror&author=Carlitos&image=unaImagen&"
             + "title=Las aventuras terrorificas de Carlitos&subtitle=CarlitosWay&"
             + "publisher=LaGuitarra&fromYear=2005&toYear=2005&pages=259&isbn=4578-8665&"
@@ -183,13 +193,13 @@ public class BookControllerTest {
     @WithMockUser
     @Test
     public void whenFindAndNotExists_thenReturnNotFound() throws Exception {
-        Pageable customPageable = PageRequest.of(0, 5, Sort.by("title"));
-        List<Book> books = new ArrayList<>();
+        Pageable customPageable = new PageRequest(0, 5, new Sort("title"));
+        List<Book> books = new ArrayList<Book>();
         books.add(oneTestBook);
         when(mockBookRepository.findAllByEveryField("1", "Terror", "Carlitos",
             "unaImagen", "Las aventuras terrorificas de Carlitos",
             "CarlitosWay", "LaGuitarra", "2005", "2005",
-            "259", "4578-8665", customPageable)).thenReturn(Optional.of(books));
+            "259", "4578-8665", customPageable)).thenReturn(new PageImpl(books));
         String url = ("/api/books?genre=Comedia&author=Carlitos");
         mvc.perform(get(url)
             .contentType(MediaType.APPLICATION_JSON))

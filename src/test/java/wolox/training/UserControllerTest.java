@@ -1,5 +1,6 @@
 package wolox.training;
 
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -9,20 +10,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import java.time.LocalDate;
-import java.util.Optional;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.NestedServletException;
+import wolox.training.config.WebMvcConfig;
 import wolox.training.controllers.UserController;
 import wolox.training.models.Book;
 import wolox.training.models.User;
@@ -30,34 +36,27 @@ import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 import wolox.training.services.BookService;
 import wolox.training.services.CustomUserDetailsService;
-import wolox.training.services.UserService;
 
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(UserController.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = WebMvcConfig.class)
+@WebAppConfiguration
 public class UserControllerTest {
 
     @Autowired
-    @SuppressWarnings("unused")
+    private WebApplicationContext wac;
+
     private MockMvc mvc;
 
-    @MockBean
     @SuppressWarnings("unused")
     private BookRepository mockBookRepository;
 
-    @MockBean
     @SuppressWarnings("unused")
     private UserRepository mockUserRepository;
 
-    @MockBean
     @SuppressWarnings("unused")
     private BookService mockBookService;
 
-    @MockBean
-    @SuppressWarnings("unused")
-    private UserService mockUserService;
-
-    @MockBean
     @SuppressWarnings("unused")
     private CustomUserDetailsService mockCustomUserDetailsService;
 
@@ -66,6 +65,14 @@ public class UserControllerTest {
 
     @Before
     public void setUp() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(
+            SecurityMockMvcConfigurers.springSecurity()).build();
+        this.mockBookRepository = mock(BookRepository.class);
+        this.mockUserRepository = mock(UserRepository.class);
+        this.mockBookService = mock(BookService.class);
+        this.mockCustomUserDetailsService = mock(CustomUserDetailsService.class);
+        UserController.setBookRepository(mockBookRepository);
+        UserController.setUserRepository(mockUserRepository);
         oneTestBook = new Book();
         oneTestBook.setAuthor("Stephen King");
         oneTestBook.setGenre("Terror");
@@ -86,7 +93,7 @@ public class UserControllerTest {
     @WithMockUser
     @Test
     public void whenFindByIdWhichExists_thenUserIsReturned() throws Exception {
-        Mockito.when(mockUserRepository.findById(1L)).thenReturn(Optional.of(oneTestUser));
+        Mockito.when(mockUserRepository.findOne(1L)).thenReturn(oneTestUser);
         String url = ("/api/users/1");
         mvc.perform(get(url)
             .contentType(MediaType.APPLICATION_JSON))

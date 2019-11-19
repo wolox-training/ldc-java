@@ -1,20 +1,32 @@
 package wolox.training.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.joda.ser.LocalDateSerializer;
 import com.google.common.base.Preconditions;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.Type;
+import org.joda.time.LocalDate;
+import org.springframework.data.repository.cdi.Eager;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import wolox.training.exceptions.BookAlreadyOwnedException;
 
 @Entity
@@ -37,15 +49,17 @@ public class User {
     private String name;
 
     @NotNull
+    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthdate;
 
     @NotNull
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-    private List<Book> books;
+    @JsonManagedReference
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private List<Book> books = new ArrayList<Book>();
 
-    public User() {
-        this.books = new ArrayList<>();
-    }
+    public User() {}
 
     public long getId() {
         return id;
@@ -66,7 +80,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public String getName() {

@@ -1,10 +1,10 @@
 package wolox.training.services;
 
-import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.models.Book;
 import wolox.training.models.DTO.BookDTO;
 import wolox.training.repositories.BookRepository;
@@ -44,13 +44,14 @@ public class BookService {
         return book;
     }
 
-    public Optional<Book> findByIsbn(String isbn) {
-        Optional<BookDTO> optionalBookDTO = openLibraryService.bookInfo(isbn);
-        return optionalBookDTO.map(bookDTO -> {
-            Book book = this.convertToEntity(bookDTO);
+    public Book findByIsbn(String isbn) {
+        BookDTO optionalBookDTO = openLibraryService.bookInfo(isbn);
+        if (optionalBookDTO != null) {
+            Book book = this.convertToEntity(optionalBookDTO);
             bookRepository.save(book);
             return book;
-        });
+        }
+        throw new BookNotFoundException("Book ISBN not found in external service");
     }
 
 }

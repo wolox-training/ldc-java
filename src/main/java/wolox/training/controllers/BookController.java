@@ -1,8 +1,7 @@
 package wolox.training.controllers;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import wolox.training.exceptions.BookIdMismatchException;
+import wolox.training.exceptions.BookNotFoundException;
 import wolox.training.exceptions.RequiredFieldNotExists;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
@@ -30,18 +29,33 @@ public class BookController {
 
     @Autowired
     @SuppressWarnings("unused")
-    private BookRepository bookRepository;
+    private static BookRepository bookRepository;
 
     @Autowired
     @SuppressWarnings("unused")
-    private BookService bookService;
+    private static BookService bookService;
+
+    public static void setBookRepository(BookRepository bookRepository) {
+        BookController.bookRepository = bookRepository;
+    }
+
+    public static void setBookService(BookService bookService) {
+        BookController.bookService = bookService;
+    }
+
+    BookController(@Autowired BookRepository bookRepository, @Autowired BookService bookService) {
+        BookController.setBookRepository(bookRepository);
+        BookController.setBookService(bookService);
+    }
 
     @GetMapping("/{id}")
     @SuppressWarnings("unused")
     public Book findOne(@PathVariable Long id) {
-        return bookRepository.findById(id).
-            orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+        Book book = bookRepository.findOne(id);
+        if (book == null) {
+            throw new BookNotFoundException("Book with id " + id + " not found");
+        }
+        return book;
     }
 
     @PostMapping
@@ -52,10 +66,11 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        bookRepository.findById(id).
-            orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
-        bookRepository.deleteById(id);
+        Book book = bookRepository.findOne(id);
+        if (book == null) {
+            throw new BookNotFoundException("Book with id " + id + " not found");
+        }
+        bookRepository.delete(id);
     }
 
     @PutMapping("/{id}")
@@ -63,33 +78,34 @@ public class BookController {
         if (book.getId() != id) {
             throw new BookIdMismatchException();
         }
-        bookRepository.findById(id).
-            orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+        Book foundBook = bookRepository.findOne(id);
+        if (foundBook == null) {
+            throw new BookNotFoundException("Book with id " + id + " not found");
+        }
         return bookRepository.save(book);
     }
 
     @GetMapping("/search-by-isbn")
     public ResponseEntity<Book> search(@RequestParam("isbn") String isbn) {
         try {
-            Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);
-            if (optionalBook.isPresent()) {
-                return (ResponseEntity.status(HttpStatus.OK).body(optionalBook.get()));
+            Book optionalBook = bookRepository.findByIsbn(isbn);
+            if (optionalBook != null) {
+                return (ResponseEntity.status(HttpStatus.OK).body(optionalBook));
             } else {
-                return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(bookService.findByIsbn(isbn).orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Book with ISBN " + isbn + " not found")));
+                Book foundBook = bookService.findByIsbn(isbn);
+                if (foundBook == null) {
+                    throw new BookNotFoundException("Book with ISBN " + isbn + " not found");
+                }
+                return ResponseEntity.status(HttpStatus.CREATED).body(foundBook);
             }
         } catch (RequiredFieldNotExists ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage());
+            throw ex;
         }
     }
 
     @GetMapping
     @ResponseBody
-    public List<Book> getBooks(@RequestParam(required = false, defaultValue = "") String id,
+    public Page<Book> getBooks(@RequestParam(required = false, defaultValue = "") String id,
         @RequestParam(required = false, defaultValue = "") String genre,
         @RequestParam(required = false, defaultValue = "") String author,
         @RequestParam(required = false, defaultValue = "") String image,
@@ -101,12 +117,14 @@ public class BookController {
         @RequestParam(required = false, defaultValue = "") String pages,
         @RequestParam(required = false, defaultValue = "") String isbn,
         Pageable pageable) {
-        return bookRepository
+
+        Page<Book> foundBooks = bookRepository
             .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
-                fromYear, toYear, pages, isbn, pageable)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Not found")
-            );
+                fromYear, toYear, pages, isbn, pageable);
+        if (foundBooks == null || foundBooks.getSize() == 0) {
+            throw new BookNotFoundException("Not found");
+        }
+        return foundBooks;
     }
 
 
