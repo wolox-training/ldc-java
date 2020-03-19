@@ -107,13 +107,13 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @GetMapping("/username")
+    @GetMapping("/me")
     @ResponseBody
     public String currentUsername(Principal principal) {
         return principal.getName();
     }
 
-    @GetMapping("/search")
+    @GetMapping
     public List<User> findByBirthdateAndName(
         @RequestParam(required = false, defaultValue = "0000-01-01") String from,
         @RequestParam(required = false, defaultValue = "9999-12-31") String to,

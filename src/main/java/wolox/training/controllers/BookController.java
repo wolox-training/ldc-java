@@ -73,8 +73,8 @@ public class BookController {
         return bookRepository.save(book);
     }
 
-    @GetMapping("/search-by-isbn")
-    public ResponseEntity<Book> search(@RequestParam("isbn") String isbn) {
+    @GetMapping("/isbn/{isbn}")
+    public ResponseEntity<Book> search(@PathVariable("isbn") String isbn) {
         try {
             Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);
             if (optionalBook.isPresent()) {
