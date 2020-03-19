@@ -23,6 +23,7 @@ import wolox.training.exceptions.RequiredFieldNotExists;
 import wolox.training.models.Book;
 import wolox.training.repositories.BookRepository;
 import wolox.training.services.BookService;
+import wolox.training.utils.MessageConstants;
 
 @RestController
 @RequestMapping("/api/books")
@@ -41,7 +42,8 @@ public class BookController {
     public Book findOne(@PathVariable Long id) {
         return bookRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+                    MessageConstants.getBookByKeyNotFoundMessage("id", id.toString())
+            ));
     }
 
     @PostMapping
@@ -54,7 +56,8 @@ public class BookController {
     public void delete(@PathVariable Long id) {
         bookRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+                    MessageConstants.getBookByKeyNotFoundMessage("id", id.toString())
+            ));
         bookRepository.deleteById(id);
     }
 
@@ -65,7 +68,8 @@ public class BookController {
         }
         bookRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+                    MessageConstants.getBookByKeyNotFoundMessage("id", id.toString())
+            ));
         return bookRepository.save(book);
     }
 
@@ -79,7 +83,8 @@ public class BookController {
                 return ResponseEntity.status(HttpStatus.CREATED)
                     .body(bookService.findByIsbn(isbn).orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Book with ISBN " + isbn + " not found")));
+                                MessageConstants.getBookByKeyNotFoundMessage("isbn", isbn)
+                        )));
             }
         } catch (RequiredFieldNotExists ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -105,7 +110,7 @@ public class BookController {
             .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
                 fromYear, toYear, pages, isbn, pageable)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Not found")
+                MessageConstants.getEntityNotFoundMessage(Book.class))
             );
     }
 
