@@ -18,4 +18,8 @@ final public class MessageConstants {
         return (klass.getName() + " not found");
     }
 
+    static public String getIllegalArgumentMessage(String argument) {
+        return ("Illegal Argument, " + argument + " cannot be empty.");
+    }
+
 }
