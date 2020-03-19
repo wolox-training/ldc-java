@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import wolox.training.exceptions.BookAlreadyOwnedException;
@@ -22,7 +23,8 @@ import wolox.training.exceptions.BookAlreadyOwnedException;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ")
+    @SequenceGenerator(name = "USER_SEQ", sequenceName = "users_id_seq", allocationSize = 1)
     @SuppressWarnings("unused")
     private long id;
 
