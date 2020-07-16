@@ -29,6 +29,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile group: 'com.google.guava', name: 'guava', version: '27.0-jre'
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.3.1.RELEASE'
     testCompile group: 'org.springframework.security', name: 'spring-security-test'
     compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.4.RELEASE'
     compile 'org.modelmapper:modelmapper:2.3.3'
