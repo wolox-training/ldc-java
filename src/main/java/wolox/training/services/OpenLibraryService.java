@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,14 +19,20 @@ class OpenLibraryService {
     private static final String SERVER_URL = "http://openlibrary.org";
     private static final String BOOKS_URI = "/api/books";
 
+    @Autowired
+    WebClient webClient;
 
-    Optional<BookDTO> bookInfo(String isbn) {
-        ClientResponse clientResponse = WebClient
-                .builder()
+    @Bean
+    WebClient buildWebClient() {
+        return WebClient.builder()
                 .baseUrl(SERVER_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .build()
+                .build();
+    }
+
+    Optional<BookDTO> bookInfo(String isbn) {
+        ClientResponse clientResponse = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BOOKS_URI)
