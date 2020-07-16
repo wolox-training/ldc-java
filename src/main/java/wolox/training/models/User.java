@@ -3,26 +3,30 @@ package wolox.training.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.base.Preconditions;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import wolox.training.exceptions.BookAlreadyOwnedException;
+import wolox.training.utils.MessageConstants;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import wolox.training.exceptions.BookAlreadyOwnedException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_SEQ")
+    @SequenceGenerator(name = "USER_SEQ", sequenceName = "users_id_seq", allocationSize = 1)
     @SuppressWarnings("unused")
     private long id;
 
@@ -57,7 +61,7 @@ public class User {
 
     public void setUsername(String username) {
         Preconditions.checkArgument(username != null && !username.isEmpty(),
-            "Illegal Argument, username cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("username"));
         this.username = username;
     }
 
@@ -75,7 +79,7 @@ public class User {
 
     public void setName(String name) {
         Preconditions.checkArgument(name != null && !name.isEmpty(),
-            "Illegal Argument, name cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("name"));
         this.name = name;
     }
 
@@ -89,7 +93,7 @@ public class User {
     }
 
     public List<Book> getBooks() {
-        return (List<Book>) Collections.unmodifiableList(books);
+        return Collections.unmodifiableList(books);
     }
 
     public void setBooks(List<Book> books) {

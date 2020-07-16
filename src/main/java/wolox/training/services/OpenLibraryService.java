@@ -30,6 +30,7 @@ class OpenLibraryService {
                         .path(BOOKS_URI)
                         .queryParam("bibkeys", ("ISBN:" + isbn))
                         .queryParam("format", "json")
+                        .queryParam("jscmd", "data")
                         .build()
                 )
                 .exchange()

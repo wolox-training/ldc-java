@@ -1,19 +1,23 @@
 package wolox.training.models;
 
 import com.google.common.base.Preconditions;
-import java.util.List;
+import wolox.training.utils.MessageConstants;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "BOOK_SEQ")
+    @SequenceGenerator(name = "BOOK_SEQ", sequenceName = "book_id_seq", allocationSize = 1)
     @SuppressWarnings("unused")
     private long id;
 
@@ -69,7 +73,7 @@ public class Book {
 
     public void setAuthor(String author) {
         Preconditions.checkArgument(author != null && !author.isEmpty(),
-            "Illegal Argument, author cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("author"));
         this.author = author;
     }
 
@@ -79,7 +83,7 @@ public class Book {
 
     public void setImage(String image) {
         Preconditions.checkArgument(image != null && !image.isEmpty(),
-            "Illegal Argument, image cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("image"));
         this.image = image;
     }
 
@@ -89,7 +93,7 @@ public class Book {
 
     public void setTitle(String title) {
         Preconditions.checkArgument(title != null && !title.isEmpty(),
-            "Illegal Argument, title cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("title"));
         this.title = title;
     }
 
@@ -99,7 +103,7 @@ public class Book {
 
     public void setSubtitle(String subtitle) {
         Preconditions.checkArgument(subtitle != null && !subtitle.isEmpty(),
-            "Illegal Argument, subtitle cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("subtitle"));
         this.subtitle = subtitle;
     }
 
@@ -109,7 +113,7 @@ public class Book {
 
     public void setPublisher(String publisher) {
         Preconditions.checkArgument(publisher != null && !publisher.isEmpty(),
-            "Illegal Argument, publisher cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("publisher"));
         this.publisher = publisher;
     }
 
@@ -119,7 +123,7 @@ public class Book {
 
     public void setYear(String year) {
         Preconditions.checkArgument(year != null && !year.isEmpty(),
-            "Illegal Argument, year cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("year"));
         this.year = year;
     }
 
@@ -139,7 +143,7 @@ public class Book {
 
     public void setIsbn(String isbn) {
         Preconditions.checkArgument(isbn != null && !isbn.isEmpty(),
-            "Illegal Argument, isbn cannot be empty.");
+                MessageConstants.getIllegalArgumentMessage("isbn"));
         this.isbn = isbn;
     }
 

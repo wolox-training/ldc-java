@@ -25,6 +25,7 @@ import wolox.training.models.User;
 import wolox.training.repositories.BookRepository;
 import wolox.training.repositories.UserRepository;
 import wolox.training.services.UserService;
+import wolox.training.utils.MessageConstants;
 
 @RestController
 @RequestMapping("/api/users")
@@ -46,7 +47,8 @@ public class UserController {
     public User findOne(@PathVariable Long id) {
         return userRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with id " + id + " not found"));
+                    MessageConstants.getUserByKeyNotFoundMessage("id", id.toString())
+            ));
     }
 
     @PostMapping
@@ -60,10 +62,12 @@ public class UserController {
     public void addBook(@PathVariable Long userId, @PathVariable Long bookId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with id " + userId + " not found"));
+                    MessageConstants.getUserByKeyNotFoundMessage("id", userId.toString())
+            ));
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + bookId + " not found"));
+                    MessageConstants.getBookByKeyNotFoundMessage("id", bookId.toString())
+            ));
         user.addBook(book);
         userRepository.save(user);
     }
@@ -72,7 +76,8 @@ public class UserController {
     public void delete(@PathVariable Long id) {
         userRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with id " + id + " not found"));
+                    MessageConstants.getUserByKeyNotFoundMessage("id", id.toString())
+            ));
         userRepository.deleteById(id);
     }
 
@@ -80,10 +85,12 @@ public class UserController {
     public void removeBook(@PathVariable Long userId, @PathVariable Long bookId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with id " + userId + " not found"));
+                    MessageConstants.getUserByKeyNotFoundMessage("id", userId.toString())
+            ));
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + bookId + " not found"));
+                    MessageConstants.getBookByKeyNotFoundMessage("id", bookId.toString())
+            ));
         user.removeBook(book);
         userRepository.save(user);
     }
@@ -95,17 +102,18 @@ public class UserController {
         }
         userRepository.findById(id).
             orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with id " + id + " not found"));
+                    MessageConstants.getUserByKeyNotFoundMessage("id", id.toString())
+            ));
         return userRepository.save(user);
     }
 
-    @GetMapping("/username")
+    @GetMapping("/me")
     @ResponseBody
-    public String currentUserName(Principal principal) {
+    public String currentUsername(Principal principal) {
         return principal.getName();
     }
 
-    @GetMapping("/search")
+    @GetMapping
     public List<User> findByBirthdateAndName(
         @RequestParam(required = false, defaultValue = "0000-01-01") String from,
         @RequestParam(required = false, defaultValue = "9999-12-31") String to,
@@ -117,7 +125,7 @@ public class UserController {
                 LocalDate.parse(from, formatter),
                 LocalDate.parse(to, formatter), name, pageable).
                 orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Not found"));
+                    MessageConstants.getEntityNotFoundMessage(User.class)));
     }
 
 }
