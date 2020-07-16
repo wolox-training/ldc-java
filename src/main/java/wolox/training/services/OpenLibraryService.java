@@ -1,34 +1,49 @@
 package wolox.training.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 import wolox.training.models.DTO.BookDTO;
 
 @Service
 class OpenLibraryService {
 
-    private static final String API_URL = "https://openlibrary.org/api/books?bibkeys=ISBN:";
-    private static final String FORMAT_PARAMETER = "&format=json&jscmd=data";
+    private static final String SERVER_URL = "http://openlibrary.org";
+    private static final String BOOKS_URI = "/api/books";
+
 
     Optional<BookDTO> bookInfo(String isbn) {
-        RestTemplate restTemplate = new RestTemplate();
-        Optional<Map<String, BookDTO>> optionalResponse = Optional.ofNullable(restTemplate
-            .exchange(
-                API_URL + isbn + FORMAT_PARAMETER,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<Map<String, BookDTO>>() {
-                }).getBody());
-        return optionalResponse.map(responseMap -> {
-            String isbnFromResponse = responseMap.keySet().iterator().next();
-            BookDTO bookDTO = responseMap.values().iterator().next();
-            bookDTO.setIsbnFromResponse(isbnFromResponse);
-            return bookDTO;
-        });
+        ClientResponse clientResponse = WebClient
+                .builder()
+                .baseUrl(SERVER_URL)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .build()
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(BOOKS_URI)
+                        .queryParam("bibkeys", ("ISBN:" + isbn))
+                        .queryParam("format", "json")
+                        .build()
+                )
+                .exchange()
+                .block();
+        // The response will be an object with ISBN as a key and the entire object as the value
+        Optional<Map<String, LinkedHashMap<String, Object>>> response = Optional
+                .ofNullable(clientResponse.bodyToMono(Map.class).block());
+        return response.map(responseData -> responseData.get("ISBN:" + isbn))
+                .map(book -> {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    BookDTO bookDTO = objectMapper.convertValue(book, BookDTO.class);
+                    bookDTO.setIsbn(isbn);
+                    return bookDTO;
+                });
     }
 
 }

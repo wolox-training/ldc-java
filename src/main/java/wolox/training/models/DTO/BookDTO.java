@@ -30,16 +30,12 @@ public class BookDTO {
     @JsonProperty
     private List<AuthorDTO> authors;
 
-    public BookDTO() {
-
-    }
-
     public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbnFromResponse(String responseIsbn) {
-        this.isbn = responseIsbn.replaceAll("ISBN:", "");
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public String getTitle() {

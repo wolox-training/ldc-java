@@ -40,8 +40,8 @@ public class BookController {
     @SuppressWarnings("unused")
     public Book findOne(@PathVariable Long id) {
         return bookRepository.findById(id).
-            orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Book with id " + id + " not found"));
     }
 
     @PostMapping
@@ -53,8 +53,8 @@ public class BookController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         bookRepository.findById(id).
-            orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Book with id " + id + " not found"));
         bookRepository.deleteById(id);
     }
 
@@ -64,8 +64,8 @@ public class BookController {
             throw new BookIdMismatchException();
         }
         bookRepository.findById(id).
-            orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Book with id " + id + " not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Book with id " + id + " not found"));
         return bookRepository.save(book);
     }
 
@@ -73,40 +73,37 @@ public class BookController {
     public ResponseEntity<Book> search(@RequestParam("isbn") String isbn) {
         try {
             Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);
-            if (optionalBook.isPresent()) {
-                return (ResponseEntity.status(HttpStatus.OK).body(optionalBook.get()));
-            } else {
-                return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(bookService.findByIsbn(isbn).orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Book with ISBN " + isbn + " not found")));
-            }
+            return optionalBook.map(book -> (ResponseEntity.status(HttpStatus.OK).body(book)))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.CREATED)
+                            .body(bookService.findByIsbn(isbn).orElseThrow(
+                                    () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                            "Book with ISBN " + isbn + " not found"))));
         } catch (RequiredFieldNotExists ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage());
+                    ex.getMessage());
         }
     }
 
     @GetMapping
     @ResponseBody
     public List<Book> getBooks(@RequestParam(required = false, defaultValue = "") String id,
-        @RequestParam(required = false, defaultValue = "") String genre,
-        @RequestParam(required = false, defaultValue = "") String author,
-        @RequestParam(required = false, defaultValue = "") String image,
-        @RequestParam(required = false, defaultValue = "") String title,
-        @RequestParam(required = false, defaultValue = "") String subtitle,
-        @RequestParam(required = false, defaultValue = "") String publisher,
-        @RequestParam(required = false, defaultValue = "") String fromYear,
-        @RequestParam(required = false, defaultValue = "") String toYear,
-        @RequestParam(required = false, defaultValue = "") String pages,
-        @RequestParam(required = false, defaultValue = "") String isbn,
-        Pageable pageable) {
+            @RequestParam(required = false, defaultValue = "") String genre,
+            @RequestParam(required = false, defaultValue = "") String author,
+            @RequestParam(required = false, defaultValue = "") String image,
+            @RequestParam(required = false, defaultValue = "") String title,
+            @RequestParam(required = false, defaultValue = "") String subtitle,
+            @RequestParam(required = false, defaultValue = "") String publisher,
+            @RequestParam(required = false, defaultValue = "") String fromYear,
+            @RequestParam(required = false, defaultValue = "") String toYear,
+            @RequestParam(required = false, defaultValue = "") String pages,
+            @RequestParam(required = false, defaultValue = "") String isbn,
+            Pageable pageable) {
         return bookRepository
-            .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
-                fromYear, toYear, pages, isbn, pageable)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Not found")
-            );
+                .findAllByEveryField(id, genre, author, image, title, subtitle, publisher,
+                        fromYear, toYear, pages, isbn, pageable)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Not found")
+                );
     }
 
 
